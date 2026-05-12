@@ -108,7 +108,8 @@ data/
     └── ames_mutagenicity_data.csv  ← O arquivo deve estar aqui!
 ```
 
-**Nota:** O dataset não está versionado no Git devido ao seu tamanho, mas **está incluído no arquivo ZIP de entrega do trabalho**.
+**Nota:** O dataset não está versionado no Git devido ao seu tamanho
+**Nota:** O dataset não está incluído no ZIP de entrega devido ao limite de tamanho do Moodle (16 MB). Baixe-o do link acima e coloque na pasta `data/raw/` antes de executar os notebooks.
 
 #### Configuração do Ambiente Virtual (Recomendado)
 
