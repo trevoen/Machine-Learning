@@ -19,41 +19,38 @@ Machine-Learning/
 │
 ├── data/                           # Dados do projeto
 │   ├── raw/                        # Dados originais (não modificados)
-│   │   └── ames_mutagenicity_data.csv
-│   ├── processed/                  # Dados processados
-│   │   ├── train.csv              # Conjunto de treino
-│   │   ├── test.csv               # Conjunto de teste
-│   │   └── validation.csv         # Conjunto de validação (se aplicável)
-│   └── README.txt                  # Descrição do dataset
+│   │   ├── ames_mutagenicity_data.csv
+│   │   └── README (1).txt         # Descrição do dataset original
+│   └── processed/                  # Dados processados (gerados pelos notebooks)
 │
-├── src/                            # Código fonte
-│   ├── 01_data_loading.py         # Carregamento dos dados
-│   ├── 02_eda.py                  # Análise Exploratória de Dados
-│   ├── 03_preprocessing.py        # Pré-processamento
-│   ├── 04_spot_checking.py        # Spot-checking de algoritmos
-│   └── utils.py                   # Funções auxiliares
+├── notebooks/                      # Jupyter Notebooks (implementação principal)
+│   ├── 01_exploratory_analysis.ipynb       # Análise Exploratória de Dados
+│   ├── 02_data_preprocessing.ipynb         # Pré-processamento
+│   └── 03_model_spotchecking.ipynb         # Spot-checking de algoritmos
 │
-├── notebooks/                      # Jupyter Notebooks
-│   ├── 01_exploratory_analysis.ipynb
-│   ├── 02_data_preprocessing.ipynb
-│   └── 03_model_spotchecking.ipynb
-│
-├── results/                        # Resultados dos experimentos
+├── results/                        # Resultados dos experimentos (gerados automaticamente)
 │   ├── figures/                    # Gráficos e visualizações
-│   │   ├── eda/                   # Gráficos da EDA
-│   │   └── models/                # Gráficos de desempenho dos modelos
-│   ├── metrics/                    # Métricas de desempenho
-│   │   └── spot_checking_results.csv
-│   └── models/                     # Modelos treinados (se necessário)
+│   │   ├── eda/                   # Figuras da EDA (figure_1.png, figure_2.png, figure_3.png)
+│   │   └── models/                # Figuras de desempenho dos modelos
+│   │       ├── models_comparison.png
+│   │       ├── confusion_matrix_*.png
+│   │       └── ranking_*.png
+│   └── metrics/                    # Métricas de desempenho (CSV)
+│       ├── eda_summary.txt
+│       ├── preprocessing_summary.txt
+│       ├── spot_checking_results.csv
+│       └── test_results.csv
 │
-├── docs/                           # Documentação
-│   ├── T1 - Enunciado.pdf
-│   ├── INF01017 - Diretrizes para Uso de Ferramentas de IA.pdf
-│   └── INF01017 - Citando o uso de Ferramentas de IA.pdf
+├── src/                            # Código fonte Python (módulos auxiliares, se houver)
 │
+├── machine-learning-py3.13.5/      # Ambiente virtual (não versionado)
+│
+├── .gitignore                      # Arquivos ignorados pelo git
+├── .vscode/settings.json           # Configurações do VS Code/Cursor
 ├── requirements.txt                # Dependências do projeto
-├── .gitignore                      # Arquivos a serem ignorados pelo git
-└── README.md                       # Este arquivo
+├── README.md                       # Este arquivo
+├── CHECKLIST_T1.md                 # Verificação de requisitos do T1
+└── ESTRATEGIAS_T2.md               # Estratégias recomendadas para o T2
 ```
 
 ### Objetivo do Trabalho (T1)
@@ -86,11 +83,13 @@ Realizar spot-checking de algoritmos de aprendizado supervisionado para classifi
 
 O dataset contém informações sobre compostos químicos avaliados pelo teste de Ames:
 
-- **Instâncias:** ~7000 compostos
-- **Features:** ~1600 descritores moleculares (calculados com Mordred)
-- **Target:** Coluna "Overall" - label de consenso para mutagenicidade Ames
-- **Partições:** Train, Internal, External (conforme artigo original)
-- **Features adicionais:** TA98, TA100, TA102, TA1535, TA1537 (labels por cepa)
+- **Instâncias:** 5,536 compostos (após pré-processamento)
+- **Features:** 1,359 descritores moleculares numéricos (após remoção de metadados e features problemáticas)
+- **Target:** Classes mutagênicas
+  - **1** (mutagênico): 56.05% das amostras
+  - **-1** (não-mutagênico): 39.78% das amostras
+  - **0** (indefinido): 4.17% das amostras (removido no pré-processamento)
+- **Características:** Dataset de alta dimensionalidade, sem valores faltantes após limpeza, desbalanceamento moderado
 
 ### Instalação e Configuração
 
@@ -98,6 +97,22 @@ O dataset contém informações sobre compostos químicos avaliados pelo teste d
 
 - Python 3.8+ (recomendado: Python 3.13.5)
 - pip
+- Dataset: `ames_mutagenicity_data.csv`
+
+#### ⚠️ IMPORTANTE: Preparação do Dataset
+
+**Antes de executar os notebooks**, certifique-se de que o dataset está na pasta correta:
+
+1. Baixe o dataset de: https://data.mendeley.com/datasets/ktc6gbfsbh/2
+2. Coloque o arquivo `ames_mutagenicity_data.csv` em: `data/raw/`
+
+```
+data/
+└── raw/
+    └── ames_mutagenicity_data.csv  ← O arquivo deve estar aqui!
+```
+
+**Nota:** O dataset não está versionado no Git devido ao seu tamanho, mas **está incluído no arquivo ZIP de entrega do trabalho**.
 
 #### Configuração do Ambiente Virtual (Recomendado)
 
@@ -128,92 +143,125 @@ pip install -r requirements.txt
 
 ### Como Executar
 
+#### Pré-requisitos
+
+1. ✅ Dataset `ames_mutagenicity_data.csv` na pasta `data/raw/`
+2. ✅ Ambiente virtual ativado
+3. ✅ Dependências instaladas (`pip install -r requirements.txt`)
+
 #### Opção 1: Usando Jupyter Notebooks (Recomendado)
 
-1. Inicie o Jupyter:
+1. Certifique-se de que o ambiente virtual está ativado
+2. Inicie o Jupyter:
 ```bash
 jupyter notebook
 ```
 
-2. Execute os notebooks na ordem:
-   - `01_exploratory_analysis.ipynb`
-   - `02_data_preprocessing.ipynb`
-   - `03_model_spotchecking.ipynb`
+3. Selecione o kernel correto:
+   - **Kernel:** `machine-learning-py3.13.5` (Python 3.13.5)
+   - No menu do Jupyter: Kernel → Change Kernel → machine-learning-py3.13.5
 
-#### Opção 2: Usando Scripts Python
+4. Execute os notebooks na ordem:
+   - `01_exploratory_analysis.ipynb` - Gera 3 figuras em `results/figures/eda/`
+   - `02_data_preprocessing.ipynb` - Gera dados processados e resumo
+   - `03_model_spotchecking.ipynb` - Treina 8 modelos, gera métricas e figuras
 
-```bash
-# 1. Carregar dados
-python src/01_data_loading.py
+**Nota:** Todos os notebooks salvam automaticamente os resultados (figuras, métricas, matrizes de confusão) em `results/`.
 
-# 2. Análise exploratória
-python src/02_eda.py
+#### Opção 2: Abrindo Diretamente no Cursor/VS Code
 
-# 3. Pré-processamento
-python src/03_preprocessing.py
+1. Abra a pasta do projeto no Cursor/VS Code
+2. Selecione o interpretador Python correto:
+   - Ctrl+Shift+P (Windows) ou Cmd+Shift+P (Mac)
+   - Digite "Python: Select Interpreter"
+   - Escolha: `machine-learning-py3.13.5/Scripts/python.exe`
+3. Abra e execute os notebooks diretamente no editor
 
-# 4. Spot-checking
-python src/04_spot_checking.py
-```
+### Algoritmos Testados (Spot-checking)
 
-### Algoritmos a Serem Testados
-
-Conforme a proposta de spot-checking, será testado um conjunto diversificado de algoritmos:
+Foram testados 8 algoritmos diversificados, conforme a proposta de spot-checking:
 
 1. **Modelos Lineares**
-   - Regressão Logística
+   - Logistic Regression
    - SVM Linear
 
 2. **Modelos Baseados em Árvores**
-   - Árvore de Decisão
+   - Decision Tree
    - Random Forest
 
 3. **Modelos de Ensemble/Boosting**
-   - Gradient Boosting (XGBoost/LightGBM)
+   - Gradient Boosting
 
 4. **Modelos Baseados em Instâncias**
    - K-Nearest Neighbors (KNN)
 
-5. **Outros**
+5. **Modelos Probabilísticos**
    - Naive Bayes
-   - Redes Neurais (MLP)
+
+6. **Redes Neurais**
+   - MLP Neural Network
+
+### Resultados Obtidos (Top 3)
+
+Com base no spot-checking realizado:
+
+1. **Gradient Boosting** - F1: 99.77% (CV), 99.91% (teste)
+2. **Decision Tree** - F1: 98.24% (CV), 99.46% (teste)
+3. **Random Forest** - F1: 86.43% (CV), 85.94% (teste)
+
+Para detalhes completos sobre a metodologia, resultados e análise, consulte o relatório PDF do trabalho.
 
 ### Métricas de Avaliação
 
-Para este problema de classificação, serão consideradas:
+Para este problema de classificação multiclasse, foram utilizadas:
 
-- **Acurácia** (Accuracy)
-- **Precisão** (Precision)
-- **Revocação** (Recall)
-- **F1-Score**
-- **AUC-ROC**
+- **Accuracy** - Acurácia geral
+- **Precision** - Precisão ponderada por classe (weighted average)
+- **Recall** - Revocação ponderada por classe (weighted average)
+- **F1-Score** - Métrica principal (weighted average)
+- **ROC-AUC** - Área sob a curva ROC (One-vs-Rest, weighted average)
 
-**Métrica principal:** A definir após análise do desbalanceamento das classes.
+**Métrica principal:** F1-Score (balança precisão e revocação)
 
 ### Estratégia de Validação
 
-- **K-Fold Cross-Validation** (k=5 ou k=10)
-- **Random State fixo** para reprodutibilidade
-- **Múltiplas execuções** para análise estatística
+- **Stratified K-Fold Cross-Validation** (k=5)
+- **Holdout validation:** 70/30 train/test split (estratificado)
+- **Random State fixo** (42) para reprodutibilidade total
+- **Multiple runs** via cross-validation para análise estatística robusta
 
 ### Autores
 
-[Nome dos integrantes do grupo]
+- Everton Fritsch de Lima - 00334081
+- [Nome do Integrante 2] - [Cartão]
+- [Nome do Integrante 3] - [Cartão]
 
 ### Disciplina
 
 - **Curso:** INF01017 - Aprendizado de Máquina
 - **Professora:** Mariana Recamonde Mendoza
-- **Instituição:** UFRGS
+- **Instituição:** UFRGS - Instituto de Informática
 - **Semestre:** 2026/1
 
-### Prazo de Entrega
+### Status do Projeto
 
-**Data:** 10/05/2026, 23:59h
+✅ **T1 Concluído** - Spot-checking de algoritmos finalizado
+
+**Próximos passos (T2):**
+- Otimização de hiperparâmetros dos 3 melhores modelos
+- Análise de importância de features
+- Implementação de técnicas avançadas de ensemble
+- Consultar `ESTRATEGIAS_T2.md` para planejamento detalhado
 
 ### Licença
 
 Este projeto é desenvolvido para fins acadêmicos.
+
+### Arquivos Importantes
+
+- **`CHECKLIST_T1.md`** - Verificação completa dos 37 requisitos do T1 (100% atendidos)
+- **`ESTRATEGIAS_T2.md`** - Estratégias e recomendações para o Trabalho Prático 2
+- **`results/`** - Todas as figuras e métricas geradas automaticamente pelos notebooks
 
 ### Referências
 

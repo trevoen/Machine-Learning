@@ -1,0 +1,39 @@
+============================================================
+RANKING DOS MODELOS - Métrica: F1-SCORE
+============================================================
+
+1º lugar: Gradient Boosting
+   Accuracy: 0.9977 (±0.0005)
+   Precision: 0.9978 (±0.0005)
+   Recall: 0.9977 (±0.0005)
+   F1-Score: 0.9977 (±0.0005)
+   ROC-AUC: 1.0000 (±0.0000)
+
+2º lugar: Decision Tree
+   Accuracy: 0.9824 (±0.0051)
+   Precision: 0.9826 (±0.0050)
+   Recall: 0.9824 (±0.0051)
+   F1-Score: 0.9824 (±0.0051)
+   ROC-AUC: 0.9829 (±0.0042)
+
+3º lugar: Random Forest
+   Accuracy: 0.8813 (±0.0098)
+   Precision: 0.8736 (±0.0254)
+   Recall: 0.8813 (±0.0098)
+   F1-Score: 0.8643 (±0.0110)
+   ROC-AUC: 0.9637 (±0.0096)
+
+4º lugar: MLP Neural Network
+   Accuracy: 0.8154 (±0.0115)
+   Precision: 0.8075 (±0.0118)
+   Recall: 0.8154 (±0.0115)
+   F1-Score: 0.8092 (±0.0117)
+   ROC-AUC: 0.9016 (±0.0112)
+
+5º lugar: SVM Linear
+   Accuracy: 0.8077 (±0.0168)
+   Precision: 0.8076 (±0.0168)
+   Recall: 0.8077 (±0.0168)
+   F1-Score: 0.8072 (±0.0167)
+   ROC-AUC: 0.8917 (±0.0092)
+

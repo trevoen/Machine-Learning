@@ -33,8 +33,8 @@ from utils import load_data, set_random_seed, save_figure
 
 # Configurações
 RANDOM_SEED = 42
-TRAIN_DATA_PATH = "../data/processed/train.csv"
-TEST_DATA_PATH = "../data/processed/test.csv"
+TRAIN_DATA_PATH = "data/processed/train.csv"
+TEST_DATA_PATH = "data/processed/test.csv"
 RESULTS_PATH = "../results/"
 
 set_random_seed(RANDOM_SEED)

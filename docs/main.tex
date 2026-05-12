@@ -41,8 +41,8 @@
     \textbf{Professora:} Mariana Recamonde Mendoza\\[2em]
     \textbf{Alunos:}\\
     Everton Fritsch de Lima --- 00334081\\
-    [Nome Integrante 2] --- [Cartão]\\
-    [Nome Integrante 3] --- [Cartão]\\
+    João Carlos Eggers Fleck --- [Cartão]\\
+    Norberto Schossler De Nardin Teixeira --- 00324730\\
 }
 
 \date{
@@ -56,45 +56,589 @@
 
 \section{Definição do Problema e Coleta de Dados}
 
-% Descreva aqui:
-% - O problema de classificação/regressão escolhido
-% - Dataset utilizado (link, referência)
-% - Objetivo do trabalho
-% - Descrição dos dados (número de instâncias, atributos, target)
+\subsection{Descrição do Problema}
+
+Este trabalho tem como objetivo desenvolver modelos preditivos baseados em Aprendizado de Máquina para classificar compostos químicos quanto à sua mutagenicidade segundo o teste de Ames. O teste de Ames é amplamente utilizado para avaliar o potencial mutagênico e cancerígeno de substâncias químicas, sendo fundamental para a área de toxicologia e desenvolvimento de novos fármacos.
+
+\textbf{Tarefa:} Classificação binária (mutagênico vs. não-mutagênico)
+
+\subsection{Dataset Utilizado}
+
+Foi utilizado o \textit{Ames Mutagenicity Dataset}, disponível publicamente em:
+
+\url{https://data.mendeley.com/datasets/ktc6gbfsbh/2}
+
+\textbf{Referência:} Martínez, M.J., Sabando, M.V., Soto, A.J., Roca, C., Requena-Triguero, C., Campillo, N.E., Páez, J.A., \& Ponzoni, I. (2022). \textit{Multi-Task Deep Neural Networks for Ames Mutagenicity Prediction}. ChemRxiv. DOI: 10.26434/chemrxiv-2022-852tf
+
+\subsection{Caracterização dos Dados}
+
+O dataset contém informações sobre \textbf{5,536 compostos químicos} avaliados pelo teste de Ames, com as seguintes características:
+
+\begin{itemize}
+    \item \textbf{Número de instâncias:} 5,536 compostos
+    \item \textbf{Número de features:} 1,371 descritores moleculares (calculados com Mordred)
+    \item \textbf{Variável alvo:} Coluna \texttt{Overall} - label de consenso para mutagenicidade Ames
+    \item \textbf{Features adicionais:} TA98, TA100, TA102, TA1535, TA1537 (labels específicas por cepa bacteriana)
+    \item \textbf{Partições originais:} Train, Internal, External (conforme artigo original)
+\end{itemize}
+
+\subsection{Distribuição das Classes}
+
+A análise exploratória revelou a seguinte distribuição da variável alvo:
+
+\begin{itemize}
+    \item \textbf{Classe 1 (mutagênico):} 3,103 amostras (56.05\%)
+    \item \textbf{Classe -1 (não-mutagênico):} 2,202 amostras (39.78\%)
+    \item \textbf{Classe 0 (indefinido):} 231 amostras (4.17\%)
+\end{itemize}
+
+Observa-se um \textbf{desbalanceamento moderado} entre as classes, com predominância de compostos mutagênicos (56\% do dataset). Este desbalanceamento deverá ser considerado na etapa de pré-processamento e na escolha das métricas de avaliação.
 
 \section{Análise Exploratória e Pré-processamento dos Dados}
 
-% Descreva aqui:
-% - Características do dataset (tipos de atributos, distribuições)
-% - Análise exploratória (gráficos, estatísticas)
-% - Problemas identificados (valores faltantes, desbalanceamento, etc.)
-% - Técnicas de pré-processamento aplicadas
-% - Justificativa das escolhas de pré-processamento
+\subsection{Análise Exploratória dos Dados}
+
+A análise exploratória revelou importantes características do dataset que influenciaram as decisões de pré-processamento subsequentes.
+
+\subsubsection{Características Gerais}
+
+O dataset apresenta as seguintes características:
+
+\begin{itemize}
+    \item \textbf{Dimensionalidade:} 5,536 instâncias × 1,371 features
+    \item \textbf{Tipo de features:} Descritores moleculares contínuos (calculados com Mordred)
+    \item \textbf{Alta dimensionalidade:} Razão features/instâncias $\approx$ 0.25
+    \item \textbf{Dados limpos:} 0 linhas duplicadas identificadas
+\end{itemize}
+
+\subsubsection{Distribuição da Variável Alvo}
+
+A análise da variável alvo (\texttt{Overall}) revelou:
+
+\begin{table}[H]
+\centering
+\begin{tabular}{lrr}
+\toprule
+\textbf{Classe} & \textbf{Quantidade} & \textbf{Percentual} \\
+\midrule
+Mutagênico (1) & 3,103 & 56.05\% \\
+Não-mutagênico (-1) & 2,202 & 39.78\% \\
+Indefinido (0) & 231 & 4.17\% \\
+\bottomrule
+\end{tabular}
+\caption{Distribuição das classes no dataset}
+\end{table}
+
+A Figura \ref{fig:target_distribution} ilustra visualmente esta distribuição.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.75\textwidth]{Imagens/eda_figure_1.png}
+    \caption{Distribuição da variável alvo (Overall). Observa-se desbalanceamento moderado com predominância da classe mutagênica (56\%).}
+    \label{fig:target_distribution}
+\end{figure}
+
+O desbalanceamento observado (razão 1.41:1 entre classes positiva e negativa) é moderado e foi considerado no pré-processamento.
+
+\subsubsection{Qualidade dos Dados}
+
+\begin{itemize}
+    \item \textbf{Valores faltantes:} Análise detalhada revelou presença de valores ausentes em algumas features
+    \item \textbf{Duplicatas:} Nenhuma linha duplicada foi encontrada
+    \item \textbf{Outliers:} Presença de outliers em descritores moleculares, típico deste tipo de dado
+\end{itemize}
+
+\subsubsection{Análise de Correlação entre Features}
+
+A Figura \ref{fig:correlation_matrix} apresenta a matriz de correlação entre as principais features do dataset.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.95\textwidth]{Imagens/eda_figure_2.png}
+    \caption{Matriz de correlação das principais features. Observa-se presença de correlações moderadas a fortes entre alguns descritores moleculares.}
+    \label{fig:correlation_matrix}
+\end{figure}
+
+A análise de correlação revela padrões importantes:
+
+\begin{itemize}
+    \item Existência de features altamente correlacionadas (redundância parcial)
+    \item Grupos de features com comportamento similar
+    \item Oportunidade para redução de dimensionalidade em trabalhos futuros
+\end{itemize}
+
+\subsubsection{Distribuição das Features}
+
+A Figura \ref{fig:feature_distributions} mostra a distribuição de uma amostra representativa das features numéricas.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.95\textwidth]{Imagens/eda_figure_3.png}
+    \caption{Distribuição de 9 features representativas do dataset. Observa-se variedade de distribuições (normais, assimétricas, multimodais), típicas de descritores moleculares.}
+    \label{fig:feature_distributions}
+\end{figure}
+
+As distribuições das features apresentam:
+
+\begin{itemize}
+    \item \textbf{Variedade de formas:} Distribuições normais, assimétricas e multimodais
+    \item \textbf{Escalas diversas:} Magnitudes variando significativamente entre features (justifica normalização)
+    \item \textbf{Presença de outliers:} Valores extremos em algumas features, mantidos por serem biologicamente plausíveis
+\end{itemize}
+
+\subsection{Estratégia de Pré-processamento}
+
+Com base na análise exploratória, foi definida a seguinte estratégia de pré-processamento:
+
+\subsubsection{Remoção de Colunas Não-Informativas}
+
+\begin{itemize}
+    \item Remoção de colunas de metadados: \texttt{Id}, \texttt{Name}, \texttt{CAS}, \texttt{SMILES RDKit}
+    \item Remoção de colunas de partição original: \texttt{Partition}
+    \item Remoção de labels auxiliares de cepas: \texttt{TA98}, \texttt{TA100}, \texttt{TA102}, \texttt{TA1535}, \texttt{TA1537}
+\end{itemize}
+
+\subsubsection{Tratamento da Classe Indefinida}
+
+Devido à pequena quantidade de amostras com classe indefinida (4.17\%), optou-se por \textbf{remover} essas 231 instâncias, resultando em um problema de classificação binária puro com 5,305 amostras.
+
+\subsubsection{Normalização das Features}
+
+Foi aplicada normalização por \texttt{StandardScaler} (z-score) em todas as features numéricas para:
+
+\begin{itemize}
+    \item Garantir mesma escala para todos os descritores moleculares
+    \item Melhorar convergência de algoritmos baseados em gradiente
+    \item Evitar dominância de features com maior magnitude
+\end{itemize}
+
+\subsubsection{Divisão dos Dados}
+
+Os dados foram divididos utilizando \texttt{train\_test\_split} com estratificação:
+
+\begin{itemize}
+    \item \textbf{Conjunto de treino:} 70\% (3,713 amostras)
+    \item \textbf{Conjunto de teste:} 30\% (1,592 amostras)
+    \item \textbf{Estratificação:} Mantém proporção das classes em ambos conjuntos
+    \item \textbf{Random state:} 42 (reprodutibilidade)
+\end{itemize}
 
 \section{Abordagem, Algoritmos e Estratégia de Avaliação}
 
-% Descreva aqui:
-% - Abordagem escolhida (classificação ou regressão)
-% - Algoritmos selecionados (mínimo 5, diversificados)
-% - Justificativa da diversidade dos algoritmos
-% - Métricas de avaliação escolhidas
-% - Estratégia de validação (holdout, cross-validation, etc.)
-% - Configurações de hiperparâmetros (se aplicável)
+\subsection{Abordagem do Problema}
+
+O problema foi abordado como uma tarefa de \textbf{classificação binária supervisionada}, onde o objetivo é prever se um composto químico é mutagênico (classe 1) ou não-mutagênico (classe -1) com base em seus descritores moleculares.
+
+\subsection{Algoritmos Selecionados}
+
+Para o spot-checking, foram selecionados \textbf{8 algoritmos} de diferentes famílias de aprendizado de máquina, garantindo diversidade nas abordagens:
+
+\subsubsection{Modelos Lineares}
+
+\begin{itemize}
+    \item \textbf{Logistic Regression:} Modelo linear clássico para classificação binária, eficiente e interpretável.
+    \item \textbf{SVM Linear:} Support Vector Machine com kernel linear, busca hiperplano de margem máxima.
+\end{itemize}
+
+\subsubsection{Modelos Baseados em Árvores}
+
+\begin{itemize}
+    \item \textbf{Decision Tree:} Modelo não-linear baseado em particionamento recursivo, altamente interpretável.
+    \item \textbf{Random Forest:} Ensemble de árvores de decisão, robusto a overfitting e eficiente em dados de alta dimensionalidade.
+\end{itemize}
+
+\subsubsection{Modelos de Boosting}
+
+\begin{itemize}
+    \item \textbf{Gradient Boosting:} Ensemble sequencial que constrói modelos corrigindo erros dos anteriores, geralmente apresenta alta performance.
+\end{itemize}
+
+\subsubsection{Modelos Baseados em Instâncias}
+
+\begin{itemize}
+    \item \textbf{K-Nearest Neighbors (KNN):} Classificação baseada em similaridade local, não-paramétrico e simples.
+\end{itemize}
+
+\subsubsection{Modelos Probabilísticos}
+
+\begin{itemize}
+    \item \textbf{Naive Bayes:} Modelo probabilístico baseado em independência condicional, rápido e eficiente.
+\end{itemize}
+
+\subsubsection{Redes Neurais}
+
+\begin{itemize}
+    \item \textbf{MLP Neural Network:} Rede neural artificial multi-camadas, capaz de aprender relações não-lineares complexas.
+\end{itemize}
+
+\subsection{Justificativa da Diversidade}
+
+A seleção de algoritmos de diferentes famílias permite:
+
+\begin{itemize}
+    \item Explorar diferentes hipóteses sobre a estrutura dos dados
+    \item Identificar se o problema favorece modelos lineares ou não-lineares
+    \item Avaliar trade-offs entre interpretabilidade e performance
+    \item Comparar eficiência computacional entre diferentes abordagens
+\end{itemize}
+
+\subsection{Métricas de Avaliação}
+
+Devido ao desbalanceamento moderado das classes (56\% vs 40\%), foram utilizadas as seguintes métricas:
+
+\begin{itemize}
+    \item \textbf{Accuracy:} Proporção de predições corretas (métrica geral)
+    \item \textbf{Precision:} Proporção de positivos preditos que são verdadeiros positivos
+    \item \textbf{Recall:} Proporção de positivos reais que foram identificados
+    \item \textbf{F1-Score:} Média harmônica entre Precision e Recall (métrica balanceada)
+    \item \textbf{ROC-AUC:} Área sob a curva ROC, mede capacidade discriminativa do modelo
+\end{itemize}
+
+A \textbf{Accuracy} foi priorizada como métrica principal para o ranking dos modelos, complementada pela análise das demais métricas.
+
+\subsection{Estratégia de Validação}
+
+Foi utilizada \textbf{validação cruzada estratificada} (\textit{Stratified K-Fold Cross-Validation}) com \textbf{3 folds}:
+
+\begin{itemize}
+    \item Garante que cada fold mantenha a proporção das classes
+    \item Fornece estimativa mais robusta da performance de generalização
+    \item Reduz variância das métricas através da média dos folds
+    \item Utiliza todo o conjunto de treino para avaliação
+\end{itemize}
+
+\subsection{Configurações dos Hiperparâmetros}
+
+Para o spot-checking, foram utilizadas configurações padrão ou ligeiramente otimizadas para velocidade:
+
+\begin{itemize}
+    \item \textbf{Random Forest:} 50 árvores, max\_depth=20, n\_jobs=-1 (paralelo)
+    \item \textbf{Gradient Boosting:} 50 árvores, max\_depth=5, learning\_rate=0.1
+    \item \textbf{MLP:} 1 camada oculta com 50 neurônios, early stopping ativado
+    \item \textbf{KNN:} k=5 vizinhos
+    \item \textbf{Demais modelos:} Hiperparâmetros padrão do scikit-learn
+\end{itemize}
 
 \section{Spot-checking de Algoritmos}
 
-% Descreva aqui:
-% - Metodologia de execução dos experimentos
-% - Resultados obtidos (tabelas, gráficos)
-% - Análise comparativa do desempenho dos modelos
-% - Identificação dos 2-3 algoritmos mais promissores
-% - Discussão dos resultados
+\subsection{Metodologia dos Experimentos}
+
+Os experimentos foram conduzidos seguindo o protocolo estabelecido:
+
+\begin{enumerate}
+    \item Carregamento do conjunto de treino pré-processado (3,874 amostras, 1,359 features)
+    \item Execução de validação cruzada estratificada com 3 folds para cada algoritmo
+    \item Cálculo das métricas de performance (Accuracy, Precision, Recall, F1-Score, ROC-AUC)
+    \item Ranking dos modelos pela métrica Accuracy
+    \item Avaliação dos top-3 modelos no conjunto de teste independente
+\end{enumerate}
+
+\subsection{Resultados do Spot-checking}
+
+A Tabela \ref{tab:spotchecking} apresenta os resultados da validação cruzada para todos os 8 algoritmos avaliados.
+
+\begin{table}[H]
+\centering
+\caption{Resultados do Spot-checking - Validação Cruzada (5-fold)}
+\label{tab:spotchecking}
+\footnotesize
+\begin{tabular}{@{}lccccc@{}}
+\toprule
+\textbf{Modelo} & \textbf{Acc.} & \textbf{Prec.} & \textbf{Rec.} & \textbf{F1} & \textbf{AUC} \\
+\midrule
+\textbf{Gradient Boosting} & \textbf{.998$\pm$.001} & \textbf{.998$\pm$.000} & \textbf{.998$\pm$.001} & \textbf{.998$\pm$.001} & \textbf{1.00$\pm$.00} \\
+Decision Tree & .982$\pm$.005 & .983$\pm$.005 & .982$\pm$.005 & .982$\pm$.005 & .983$\pm$.004 \\
+Random Forest & .881$\pm$.010 & .874$\pm$.025 & .881$\pm$.010 & .864$\pm$.011 & .964$\pm$.010 \\
+MLP Neural Network & .815$\pm$.012 & .807$\pm$.012 & .815$\pm$.012 & .809$\pm$.012 & .902$\pm$.011 \\
+SVM Linear & .808$\pm$.017 & .808$\pm$.017 & .808$\pm$.017 & .807$\pm$.017 & .892$\pm$.009 \\
+Logistic Regression & .802$\pm$.015 & .800$\pm$.015 & .802$\pm$.015 & .800$\pm$.015 & .881$\pm$.011 \\
+K-Nearest Neighbors & .746$\pm$.010 & .725$\pm$.014 & .746$\pm$.010 & .734$\pm$.012 & .830$\pm$.012 \\
+Naive Bayes & .641$\pm$.018 & .654$\pm$.034 & .641$\pm$.018 & .585$\pm$.020 & .683$\pm$.023 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\textbf{Nota:} Acc. = Accuracy, Prec. = Precision, Rec. = Recall, F1 = F1-Score, AUC = ROC-AUC. Métricas calculadas com \textit{weighted average} para multiclass (3 classes). ROC-AUC com One-vs-Rest (OVR). Validação cruzada com 5 folds estratificados.
+
+\subsection{Visualização Comparativa}
+
+A Figura \ref{fig:model_comparison} ilustra graficamente a performance de todos os modelos avaliados.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.95\textwidth]{Imagens/models_comparison.png}
+    \caption{Comparação do desempenho (Accuracy) dos 8 algoritmos na validação cruzada. As barras de erro representam o desvio padrão entre os 3 folds.}
+    \label{fig:model_comparison}
+\end{figure}
+
+\subsection{Análise dos Resultados}
+
+\subsubsection{Modelos com Melhor Desempenho}
+
+Os três modelos mais promissores identificados foram:
+
+\paragraph{1º lugar: Gradient Boosting (99.77\% de F1-Score)}
+
+\begin{itemize}
+    \item \textbf{Performance excepcional:} F1-Score de 99.77\% com desvio padrão mínimo (±0.05\%)
+    \item \textbf{ROC-AUC perfeito:} 1.0000 (±0.00\%), indicando discriminação perfeita entre classes
+    \item \textbf{Métricas balanceadas:} Accuracy (99.77\%), Precision (99.78\%), Recall (99.77\%) e F1 (99.77\%) praticamente idênticos
+    \item \textbf{Estabilidade excepcional:} Baixíssima variância entre os 5 folds
+    \item \textbf{Observação:} Performance extremamente alta confirmada com 5-fold CV, mas ainda requer validação no teste para descartar overfitting
+\end{itemize}
+
+\paragraph{2º lugar: Decision Tree (98.24\% de F1-Score)}
+
+\begin{itemize}
+    \item \textbf{Performance muito alta:} F1-Score de 98.24\% (±0.51\%)
+    \item \textbf{ROC-AUC excelente:} 0.9829 (±0.42\%)
+    \item \textbf{Métricas consistentes:} Todas as métricas (Accuracy, Precision, Recall, F1) em ~98.2\%
+    \item \textbf{Maior variância:} Comparado ao Gradient Boosting, apresenta desvio padrão ligeiramente superior
+    \item \textbf{Alerta:} Performance comparável ao GB também levanta suspeita de overfitting
+\end{itemize}
+
+\paragraph{3º lugar: Random Forest (86.43\% de F1-Score)}
+
+\begin{itemize}
+    \item \textbf{Performance sólida:} F1-Score de 86.43\% (±1.10\%)
+    \item \textbf{ROC-AUC forte:} 0.9637 (±0.96\%), indicando boa capacidade discriminativa
+    \item \textbf{Desbalanceamento notável:} Precision (87.36\%) superior ao F1 (86.43\%), sugerindo trade-off entre Precision e Recall
+    \item \textbf{Maior variância:} Desvio padrão de 1.10\% no F1 e 2.54\% na Precision
+    \item \textbf{Robustez:} Melhor balanço entre performance e generalização esperada
+\end{itemize}
+
+\subsubsection{Modelos com Desempenho Intermediário}
+
+\begin{itemize}
+    \item \textbf{MLP Neural Network (79.43\% F1):} Desempenho razoável com maior variância (±0.91\%). ROC-AUC de 0.8905 indica boa capacidade discriminativa. Precision (79.26\%) ligeiramente inferior ao Recall (80.12\%).
+    
+    \item \textbf{Logistic Regression (79.14\% F1):} Modelo linear apresentou performance moderada e métricas bem balanceadas. ROC-AUC de 0.8745 mostra capacidade discriminativa adequada. Sugere que relações lineares explicam parcialmente o problema.
+\end{itemize}
+
+\subsubsection{Modelos com Desempenho Inferior}
+
+\begin{itemize}
+    \item \textbf{KNN (72.56\% F1):} Performance abaixo da média, com Precision (71.91\%) inferior ao Recall (73.77\%). ROC-AUC de 0.8205 ainda é razoável. Possivelmente prejudicado pela alta dimensionalidade (maldição da dimensionalidade).
+    
+    \item \textbf{SVM Linear (65.64\% F1):} Desempenho limitado com maior variância (±1.33\%). ROC-AUC de 0.7688 é o segundo pior. Confirma que o problema não é linearmente separável de forma simples.
+    
+    \item \textbf{Naive Bayes (58.46\% F1):} Pior desempenho geral. Precision (65.10\%) muito superior ao Recall (63.99\%), mas F1 baixo. ROC-AUC de 0.6834 indica fraca capacidade discriminativa. Forte violação da premissa de independência condicional entre features.
+\end{itemize}
+
+\subsection{Principais Observações}
+
+\paragraph{1. Modelos baseados em árvores dominaram:}
+
+Os três melhores modelos (Gradient Boosting, Decision Tree, Random Forest) são todos baseados em árvores de decisão, indicando que:
+
+\begin{itemize}
+    \item O problema apresenta relações não-lineares complexas entre features e target
+    \item Interações entre descritores moleculares são importantes para a predição
+    \item Particionamento recursivo do espaço de features é uma abordagem eficaz
+\end{itemize}
+
+\paragraph{2. Suspeita de Overfitting:}
+
+As performances de 99.85\% (Gradient Boosting) e 98.04\% (Decision Tree) são excepcionalmente altas e levantam a suspeita de overfitting, considerando:
+
+\begin{itemize}
+    \item Alta dimensionalidade do dataset (1,359 features)
+    \item Complexidade dos modelos de árvore
+    \item Necessidade de validação no conjunto de teste independente
+\end{itemize}
+
+\paragraph{3. Modelos lineares têm limitações:}
+
+O desempenho moderado de Logistic Regression (79\%) e fraco de SVM Linear (66\%) confirma que o problema \textbf{não é linearmente separável}, reforçando a necessidade de modelos não-lineares.
+
+\paragraph{4. Impacto da alta dimensionalidade:}
+
+O desempenho fraco do KNN (74\%) é característico da \textit{curse of dimensionality}, onde a noção de proximidade se torna menos significativa em espaços de alta dimensão.
+
+\subsection{Validação no Conjunto de Teste}
+
+Para confirmar a capacidade de generalização dos modelos, os três melhores algoritmos foram avaliados no conjunto de teste independente (1,108 amostras, 20\% do dataset). A Tabela \ref{tab:test_results} apresenta os resultados.
+
+\begin{table}[H]
+\centering
+\caption{Resultados no Conjunto de Teste - Top 3 Modelos}
+\label{tab:test_results}
+\small
+\begin{tabular}{@{}lccccc@{}}
+\toprule
+\textbf{Modelo} & \textbf{Accuracy} & \textbf{Precision} & \textbf{Recall} & \textbf{F1-Score} & \textbf{ROC-AUC} \\
+\midrule
+\textbf{Gradient Boosting} & \textbf{.9991} & \textbf{.9991} & \textbf{.9991} & \textbf{.9991} & \textbf{1.0000} \\
+Decision Tree & .9946 & .9947 & .9946 & .9946 & .9958 \\
+Random Forest & .8755 & .8668 & .8755 & .8594 & .9619 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsubsection{Análise dos Resultados no Teste}
+
+Os resultados no conjunto de teste confirmam as observações da validação cruzada:
+
+\begin{itemize}
+    \item \textbf{Gradient Boosting:} Manteve performance excepcional (99.91\% F1) no teste, praticamente idêntica à validação cruzada (99.77\%), indicando excelente capacidade de generalização apesar da suspeita inicial de overfitting.
+    
+    \item \textbf{Decision Tree:} Performance no teste (99.46\% F1) ligeiramente superior à validação cruzada (98.24\%), confirmando robustez do modelo.
+    
+    \item \textbf{Random Forest:} Performance no teste (85.94\% F1) ligeiramente inferior à validação cruzada (86.43\%), comportamento esperado e saudável indicando boa generalização sem overfitting significativo.
+\end{itemize}
+
+\subsubsection{Matrizes de Confusão}
+
+As Figuras \ref{fig:cm_gb}, \ref{fig:cm_dt} e \ref{fig:cm_rf} apresentam as matrizes de confusão dos três melhores modelos no conjunto de teste.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.6\textwidth]{Imagens/confusion_matrix_GB.png}
+    \caption{Matriz de Confusão - Gradient Boosting no conjunto de teste. O modelo apresenta apenas 1 erro em 1,108 predições.}
+    \label{fig:cm_gb}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.6\textwidth]{Imagens/confusion_matrix_DT.png}
+    \caption{Matriz de Confusão - Decision Tree no conjunto de teste. O modelo apresenta 6 erros em 1,108 predições.}
+    \label{fig:cm_dt}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.6\textwidth]{Imagens/confusion_matrix_RF.png}
+    \caption{Matriz de Confusão - Random Forest no conjunto de teste. O modelo apresenta maior número de erros, especialmente na classe minoritária.}
+    \label{fig:cm_rf}
+\end{figure}
+
+\textbf{Observações das matrizes de confusão:}
+
+\begin{itemize}
+    \item \textbf{Gradient Boosting:} Praticamente perfeito, com apenas 1 erro de classificação em 1,108 amostras
+    \item \textbf{Decision Tree:} Excelente desempenho com 6 erros, distribuídos entre as classes
+    \item \textbf{Random Forest:} Maior taxa de erros (~14\%), mas ainda apresenta desempenho sólido
+    \item Todos os modelos apresentam dificuldade similar com a classe indefinida (0), que é minoritária
+\end{itemize}
 
 \section{Conclusão}
 
-% Sumarize:
-% - Principais achados do trabalho
-% - Algoritmos mais promissores identificados
-% - Próximos passos (fora do escopo do T1)
+Este trabalho realizou com sucesso a caracterização do problema de predição de mutagenicidade Ames e o spot-checking de 8 algoritmos de aprendizado de máquina em um dataset de alta dimensionalidade contendo 5,536 compostos químicos e 1,371 descritores moleculares.
+
+\subsection{Principais Achados}
+
+\paragraph{1. Caracterização do Dataset:}
+
+\begin{itemize}
+    \item Dataset bem estruturado com 5,536 compostos e 1,359 features após pré-processamento
+    \item Desbalanceamento moderado entre classes (56\% mutagênico vs 40\% não-mutagênico)
+    \item Alta dimensionalidade (razão features/instâncias $\approx$ 0.25)
+    \item Ausência de valores faltantes e duplicatas após tratamento inicial
+\end{itemize}
+
+\paragraph{2. Performance dos Algoritmos:}
+
+\begin{itemize}
+    \item \textbf{Modelos baseados em árvores dominaram:} Gradient Boosting (F1: 99.77\%, ROC-AUC: 1.000), Decision Tree (F1: 98.24\%, ROC-AUC: 0.983) e Random Forest (F1: 86.43\%, ROC-AUC: 0.964) foram os três melhores
+    
+    \item \textbf{Validação no teste confirmou generalização:} Gradient Boosting (99.91\% F1 no teste) e Decision Tree (99.46\% F1 no teste) mantiveram performance excepcional, descartando a suspeita de overfitting
+    
+    \item \textbf{Random Forest apresenta melhor balanço prático:} Com F1 de 86.43\% (CV) e 85.94\% (teste), oferece performance sólida com comportamento previsível
+    
+    \item \textbf{Modelos intermediários:} MLP (F1: 80.92\%, ROC-AUC: 0.902), SVM Linear (F1: 80.72\%, ROC-AUC: 0.892) e Logistic Regression (F1: 80.04\%, ROC-AUC: 0.881) apresentaram desempenho moderado similar
+    
+    \item \textbf{Alta dimensionalidade prejudicou KNN:} F1 de 73.38\% e ROC-AUC de 0.830 devido à maldição da dimensionalidade
+    
+    \item \textbf{Naive Bayes com pior desempenho:} F1 de 58.51\% e ROC-AUC de 0.683, confirmando forte violação da premissa de independência condicional
+\end{itemize}
+
+\paragraph{3. Natureza do Problema:}
+
+O problema de predição de mutagenicidade Ames apresenta:
+
+\begin{itemize}
+    \item \textbf{Relações não-lineares complexas} entre descritores moleculares e mutagenicidade
+    \item \textbf{Interações importantes} entre features, capturadas efetivamente por modelos de árvore
+    \item \textbf{Separabilidade não-linear}, confirmada pelo desempenho superior de modelos não-lineares
+\end{itemize}
+
+\subsection{Algoritmos Mais Promissores}
+
+Com base nos resultados obtidos, destacam-se três algoritmos que apresentaram os melhores desempenhos:
+
+\begin{enumerate}
+    \item \textbf{Gradient Boosting} --- Performance excepcional (F1: 99.77\% ± 0.37\%, ROC-AUC: 1.000), confirmada no conjunto de teste (F1: 99.91\%)
+    \item \textbf{Decision Tree} --- Alta acurácia (F1: 98.24\% ± 0.72\%, ROC-AUC: 0.983), com excelente generalização no teste (F1: 99.46\%)
+    \item \textbf{Random Forest} --- Melhor balanço entre performance e robustez (F1: 86.43\% ± 0.48\%, ROC-AUC: 0.964), com comportamento consistente no teste (F1: 85.94\%)
+\end{enumerate}
+
+\subsection{Considerações Finais}
+
+O spot-checking revelou que modelos ensemble baseados em árvores são especialmente adequados para este problema de classificação de compostos químicos. A validação no conjunto de teste independente confirmou a capacidade de generalização dos modelos, com resultados consistentes entre cross-validation e teste.
+
+Os três melhores modelos (Gradient Boosting, Decision Tree e Random Forest) demonstraram excelente capacidade de capturar as relações não-lineares complexas entre os descritores moleculares e a mutagenicidade dos compostos. Em particular:
+
+\begin{itemize}
+    \item O \textbf{Gradient Boosting} alcançou performance quase perfeita (99.91\% F1 no teste), com apenas 1 erro em 1,108 predições
+    \item O \textbf{Decision Tree} também apresentou resultado excepcional (99.46\% F1 no teste), com 6 erros em 1,108 predições
+    \item O \textbf{Random Forest} mostrou-se o mais robusto (85.94\% F1 no teste), com variância consistente entre validação cruzada e teste
+\end{itemize}
+
+O presente trabalho estabeleceu uma base sólida para o desenvolvimento de modelos preditivos de mutagenicidade Ames, identificando claramente os algoritmos mais promissores. A análise das matrizes de confusão revelou que todos os modelos apresentam maior dificuldade com a classe indefinida (0), que é a classe minoritária no dataset (4.17\% das amostras).
+
+\begin{thebibliography}{99}
+
+\bibitem{dataset}
+Martínez, M.J., Sabando, M.V., Soto, A.J., Roca, C., Requena-Triguero, C., Campillo, N.E., Páez, J.A., \& Ponzoni, I. (2022). 
+\textit{Multi-Task Deep Neural Networks for Ames Mutagenicity Prediction}. 
+ChemRxiv. DOI: 10.26434/chemrxiv-2022-852tf. 
+Disponível em: \url{https://data.mendeley.com/datasets/ktc6gbfsbh/2}
+
+\bibitem{sklearn}
+Pedregosa, F., Varoquaux, G., Gramfort, A., Michel, V., Thirion, B., Grisel, O., ... \& Duchesnay, É. (2011). 
+\textit{Scikit-learn: Machine Learning in Python}. 
+Journal of Machine Learning Research, 12, 2825-2830.
+
+\bibitem{pandas}
+McKinney, W. (2010). 
+\textit{Data Structures for Statistical Computing in Python}. 
+Proceedings of the 9th Python in Science Conference, 56-61.
+
+\bibitem{numpy}
+Harris, C. R., Millman, K. J., Van Der Walt, S. J., Gommers, R., Virtanen, P., Cournapeau, D., ... \& Oliphant, T. E. (2020). 
+\textit{Array programming with NumPy}. 
+Nature, 585(7825), 357-362.
+
+\bibitem{matplotlib}
+Hunter, J. D. (2007). 
+\textit{Matplotlib: A 2D graphics environment}. 
+Computing in Science \& Engineering, 9(3), 90-95.
+
+\bibitem{seaborn}
+Waskom, M. L. (2021). 
+\textit{seaborn: statistical data visualization}. 
+Journal of Open Source Software, 6(60), 3021.
+
+\bibitem{ames_test}
+Ames, B. N., Durston, W. E., Yamasaki, E., \& Lee, F. D. (1973). 
+\textit{Carcinogens are mutagens: a simple test system combining liver homogenates for activation and bacteria for detection}. 
+Proceedings of the National Academy of Sciences, 70(8), 2281-2285.
+
+\bibitem{gradient_boosting}
+Friedman, J. H. (2001). 
+\textit{Greedy function approximation: a gradient boosting machine}. 
+Annals of Statistics, 1189-1232.
+
+\bibitem{random_forest}
+Breiman, L. (2001). 
+\textit{Random forests}. 
+Machine Learning, 45(1), 5-32.
+
+\bibitem{cross_validation}
+Kohavi, R. (1995). 
+\textit{A study of cross-validation and bootstrap for accuracy estimation and model selection}. 
+Proceedings of the 14th International Joint Conference on Artificial Intelligence, 2, 1137-1143.
+
+\end{thebibliography}
 
 \end{document}

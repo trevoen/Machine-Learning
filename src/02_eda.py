@@ -23,7 +23,7 @@ from utils import (
 
 # Configurações
 RANDOM_SEED = 42
-DATA_PATH = "../data/raw/ames_mutagenicity_data.csv"
+DATA_PATH = "data/raw/ames_mutagenicity_data.csv"
 FIGURES_PATH = "../results/figures/eda/"
 
 set_random_seed(RANDOM_SEED)

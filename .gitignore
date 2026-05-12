@@ -32,6 +32,23 @@ ENV/
 .ipynb_checkpoints
 *.ipynb_checkpoints/
 
+# LaTeX compilation files
+*.aux
+*.log
+*.out
+*.toc
+*.synctex.gz
+*.fdb_latexmk
+*.fls
+*.bbl
+*.blg
+*.bcf
+*.run.xml
+texput.log
+
+# PDF output (compile on Overleaf instead)
+docs/*.pdf
+
 # PyCharm
 .idea/
 
@@ -53,10 +70,10 @@ ENV/
 Thumbs.db
 desktop.ini
 
-# Data files (large datasets should not be versioned)
-# Uncomment if data files are too large
-# data/raw/*.csv
-# data/processed/*.csv
+# Data files (large datasets)
+# NOTA: O dataset NÃO está versionado no Git, mas ESTÁ incluído no ZIP de entrega
+data/raw/*.csv
+data/processed/*.csv
 
 # Model files (if too large)
 results/models/*.pkl

@@ -13,22 +13,22 @@ if (Test-Path $envPath) {
     & $envPath
     
     Write-Host ""
-    Write-Host "✓ Ambiente ativado com sucesso!" -ForegroundColor Green
+    Write-Host "Ambiente ativado com sucesso!" -ForegroundColor Green
     Write-Host ""
     
-    Write-Host "Informações do ambiente:" -ForegroundColor Yellow
+    Write-Host "Informacoes do ambiente:" -ForegroundColor Yellow
     python --version
     Write-Host ""
     
-    Write-Host "Comandos úteis:" -ForegroundColor Cyan
-    Write-Host "  python check_setup.py       - Verificar configuração" -ForegroundColor White
-    Write-Host "  jupyter notebook           - Iniciar Jupyter" -ForegroundColor White
-    Write-Host "  python src\01_data_loading.py - Executar análises" -ForegroundColor White
-    Write-Host "  deactivate                 - Desativar ambiente" -ForegroundColor White
+    Write-Host "Comandos uteis:" -ForegroundColor Cyan
+    Write-Host "  python check_setup.py       - Verificar configuracao" -ForegroundColor White
+    Write-Host "  jupyter notebook            - Iniciar Jupyter" -ForegroundColor White
+    Write-Host "  python src\01_data_loading.py - Executar analises" -ForegroundColor White
+    Write-Host "  deactivate                  - Desativar ambiente" -ForegroundColor White
     Write-Host ""
     
 } else {
-    Write-Host "✗ Ambiente virtual não encontrado!" -ForegroundColor Red
+    Write-Host "Ambiente virtual nao encontrado!" -ForegroundColor Red
     Write-Host ""
     Write-Host "Crie o ambiente com:" -ForegroundColor Yellow
     Write-Host "  python -m venv machine-learning-py3.13.5" -ForegroundColor White

@@ -1,0 +1,45 @@
+============================================================
+RESUMO DO PRÉ-PROCESSAMENTO
+Dataset: Ames Mutagenicity
+============================================================
+
+1. ETAPAS REALIZADAS
+   a) Remoção de colunas de metadados
+   b) Tratamento de valores faltantes
+   c) Remoção de features com baixa variância
+   d) Normalização (StandardScaler)
+   e) Divisão treino/validação/teste
+
+2. DIMENSÕES FINAIS
+   - Features: 1359
+   - Total de amostras: 5536
+
+3. DIVISÃO DOS DADOS
+   - Treino: 3874 (70.0%)
+   - Validação: 554 (10.0%)
+   - Teste: 1108 (20.0%)
+
+4. DISTRIBUIÇÃO DAS CLASSES
+   Treino:
+     - 1: 2171 (56.04%)
+     - -1: 1541 (39.78%)
+     - 0: 162 (4.18%)
+
+   Validação:
+     - 1: 311 (56.14%)
+     - -1: 220 (39.71%)
+     - 0: 23 (4.15%)
+
+   Teste:
+     - 1: 621 (56.05%)
+     - -1: 441 (39.80%)
+     - 0: 46 (4.15%)
+
+5. ARQUIVOS GERADOS
+   - data/processed/train.csv
+   - data/processed/validation.csv
+   - data/processed/test.csv
+
+============================================================
+Resumo gerado automaticamente pelo notebook 02
+============================================================

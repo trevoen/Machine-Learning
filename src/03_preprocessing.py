@@ -22,8 +22,8 @@ from utils import (
 
 # Configurações
 RANDOM_SEED = 42
-DATA_PATH = "../data/raw/ames_mutagenicity_data.csv"
-PROCESSED_PATH = "../data/processed/"
+DATA_PATH = "data/raw/ames_mutagenicity_data.csv"
+PROCESSED_PATH = "data/processed/"
 
 set_random_seed(RANDOM_SEED)
 
