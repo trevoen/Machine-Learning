@@ -1,8 +1,8 @@
 """
-Script de verificacao do ambiente e estrutura do projeto
-INF01017 - Trabalho Pratico 1
+Script de verificação do ambiente e estrutura do projeto
+Predição de Mutagenicidade Ames - Aprendizado de Máquina
 
-Execute este script para verificar se tudo esta configurado corretamente.
+Execute este script para verificar se tudo está configurado corretamente.
 """
 
 import os
@@ -44,9 +44,7 @@ def check_dependencies():
         'matplotlib',
         'seaborn',
         'sklearn',
-        'jupyter',
-        'xgboost',
-        'lightgbm'
+        'jupyter'
     ]
     
     missing_packages = []
@@ -84,15 +82,12 @@ def check_directory_structure():
         'data',
         'data/raw',
         'data/processed',
-        'src',
         'notebooks',
         'results',
         'results/figures',
         'results/figures/eda',
         'results/figures/models',
-        'results/metrics',
-        'results/models',
-        'docs'
+        'results/metrics'
     ]
     
     missing_dirs = []
@@ -124,11 +119,6 @@ def check_required_files():
         'requirements.txt',
         'README.md',
         '.gitignore',
-        'src/utils.py',
-        'src/01_data_loading.py',
-        'src/02_eda.py',
-        'src/03_preprocessing.py',
-        'src/04_spot_checking.py',
         'notebooks/01_exploratory_analysis.ipynb',
         'notebooks/02_data_preprocessing.ipynb',
         'notebooks/03_model_spotchecking.ipynb'
@@ -196,13 +186,18 @@ def print_summary(checks):
     if passed == total:
         print("\n✓✓✓ TUDO OK! O projeto está configurado corretamente.")
         print("\nPróximos passos:")
-        print("1. Execute os scripts Python em src/ ou")
-        print("2. Abra os notebooks Jupyter em notebooks/")
-        print("\nConsulte QUICK_START.md para mais informações.")
+        print("1. Ative o ambiente virtual:")
+        print("   machine-learning-py3.13.5\\Scripts\\activate")
+        print("2. Inicie o Jupyter Notebook:")
+        print("   jupyter notebook")
+        print("3. Execute os notebooks na ordem:")
+        print("   - 01_exploratory_analysis.ipynb")
+        print("   - 02_data_preprocessing.ipynb")
+        print("   - 03_model_spotchecking.ipynb")
     else:
         print("\n⚠ ATENÇÃO: Algumas verificações falharam.")
         print("\nResolva os problemas indicados acima antes de prosseguir.")
-        print("Consulte README.md ou QUICK_START.md para ajuda.")
+        print("Consulte README.md para ajuda.")
     
     print("\n" + "=" * 60)
 
@@ -210,8 +205,8 @@ def print_summary(checks):
 def main():
     """Função principal."""
     print("\n" + "=" * 60)
-    print("VERIFICAÇÃO DO AMBIENTE - T1 INF01017")
-    print("Trabalho Prático de Aprendizado de Máquina")
+    print("VERIFICAÇÃO DO AMBIENTE")
+    print("Predição de Mutagenicidade Ames")
     print("=" * 60)
     
     checks = {

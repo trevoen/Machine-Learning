@@ -41,8 +41,6 @@ Machine-Learning/
 │       ├── spot_checking_results.csv
 │       └── test_results.csv
 │
-├── src/                            # Código fonte Python (módulos auxiliares, se houver)
-│
 ├── machine-learning-py3.13.5/      # Ambiente virtual (não versionado)
 │
 ├── .gitignore                      # Arquivos ignorados pelo git
@@ -231,8 +229,8 @@ Para este problema de classificação multiclasse, foram utilizadas:
 ### Autores
 
 - Everton Fritsch de Lima - 00334081
-- João Carlos Eggers Fleck - [Cartão]
-- Norberto Schossler De Nardin Teixeira - [00324730]
+- João Carlos Eggers Fleck - 00332794
+- Norberto Schossler De Nardin Teixeira - 00324730
 
 ### Disciplina
 
@@ -253,6 +251,18 @@ Para este problema de classificação multiclasse, foram utilizadas:
 ### Licença
 
 Este projeto é desenvolvido para fins acadêmicos.
+
+### Uso de Ferramentas de IA
+
+Este projeto utilizou o modelo Claude Sonnet 4.5 (Anthropic) como suporte para:
+- **Refatoração arquitetural do repositório**: Organização da estrutura de pastas e arquivos seguindo boas práticas de projetos de Machine Learning
+- **Estruturação inicial do código**: Criação dos notebooks Jupyter com estrutura padronizada para EDA, pré-processamento e spot-checking de algoritmos
+- **Configuração do ambiente**: Setup de dependências, ambiente virtual e configurações do projeto
+
+**Citação:**
+Anthropic. (2026). Claude Sonnet 4.5 [Large language model]. https://claude.ai
+
+A análise de dados, seleção e configuração dos algoritmos (scikit-learn), interpretação dos resultados e redação do relatório foram realizadas pelos autores.
 
 ### Referências
 

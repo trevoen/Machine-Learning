@@ -31,6 +31,7 @@ ENV/
 # Jupyter Notebook
 .ipynb_checkpoints
 *.ipynb_checkpoints/
+notebooks/data/
 
 # LaTeX compilation files
 *.aux
@@ -81,9 +82,12 @@ ESTRATEGIAS_T2.md
 INSTRUCOES_ENTREGA.md
 LIMPEZA_REPOSITORIO.md
 CORRECOES_PDF.md
+CITACAO_IA.md
+docs/TEMPLATE_RELATORIO.md
 *INSTRUCOES*.md
 *PLANO*.md
 *RESUMO*.md
+*ATUALIZACAO*.md
 
 # Model files (if too large)
 results/models/*.pkl

@@ -2,7 +2,8 @@
 # Execute com: .\activate.ps1
 
 Write-Host "============================================" -ForegroundColor Cyan
-Write-Host "T1 - INF01017 - Ativando Ambiente Virtual" -ForegroundColor Cyan
+Write-Host "Ativando Ambiente Virtual" -ForegroundColor Cyan
+Write-Host "Predição de Mutagenicidade Ames" -ForegroundColor Cyan
 Write-Host "============================================" -ForegroundColor Cyan
 Write-Host ""
 
@@ -23,7 +24,6 @@ if (Test-Path $envPath) {
     Write-Host "Comandos uteis:" -ForegroundColor Cyan
     Write-Host "  python check_setup.py       - Verificar configuracao" -ForegroundColor White
     Write-Host "  jupyter notebook            - Iniciar Jupyter" -ForegroundColor White
-    Write-Host "  python src\01_data_loading.py - Executar analises" -ForegroundColor White
     Write-Host "  deactivate                  - Desativar ambiente" -ForegroundColor White
     Write-Host ""
     

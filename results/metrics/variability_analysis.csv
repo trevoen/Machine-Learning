@@ -1,0 +1,9 @@
+Modelo,Acc_CV,Prec_CV,Rec_CV,F1_CV,AUC_CV
+Logistic Regression,2.152,2.061,2.152,2.088,1.402
+SVM Linear,2.323,2.325,2.323,2.309,1.152
+Decision Tree,0.577,0.566,0.577,0.576,0.483
+Random Forest,1.243,3.251,1.243,1.422,1.114
+Gradient Boosting,0.058,0.053,0.058,0.057,0.001
+K-Nearest Neighbors,1.56,2.123,1.56,1.766,1.637
+Naive Bayes,3.095,5.756,3.095,3.91,3.835
+MLP Neural Network,1.581,1.631,1.581,1.613,1.392

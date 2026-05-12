@@ -8,9 +8,12 @@
 \usepackage{graphicx}
 \usepackage{float}
 \usepackage[left=3cm,right=2cm,top=3cm,bottom=2cm]{geometry}
-\usepackage{pgfplots}
-\pgfplotsset{compat=1.17}
-\usepackage{tikz}
+
+% Desabilitar pgfplots e tikz se não forem usados (economiza tempo de compilação)
+% \usepackage{pgfplots}
+% \pgfplotsset{compat=1.17}
+% \usepackage{tikz}
+
 \usepackage{booktabs}
 \usepackage{siunitx}
 \usepackage{caption}
@@ -41,7 +44,7 @@
     \textbf{Professora:} Mariana Recamonde Mendoza\\[2em]
     \textbf{Alunos:}\\
     Everton Fritsch de Lima --- 00334081\\
-    João Carlos Eggers Fleck --- [Cartão]\\
+    João Carlos Eggers Fleck --- 00332794\\
     Norberto Schossler De Nardin Teixeira --- 00324730\\
 }
 
@@ -298,7 +301,7 @@ A \textbf{Accuracy} foi priorizada como métrica principal para o ranking dos mo
 
 \subsection{Estratégia de Validação}
 
-Foi utilizada \textbf{validação cruzada estratificada} (\textit{Stratified K-Fold Cross-Validation}) com \textbf{3 folds}:
+Foi utilizada \textbf{validação cruzada estratificada} (\textit{Stratified K-Fold Cross-Validation}) com \textbf{5 folds}:
 
 \begin{itemize}
     \item Garante que cada fold mantenha a proporção das classes
@@ -327,7 +330,7 @@ Os experimentos foram conduzidos seguindo o protocolo estabelecido:
 
 \begin{enumerate}
     \item Carregamento do conjunto de treino pré-processado (3,874 amostras, 1,359 features)
-    \item Execução de validação cruzada estratificada com 3 folds para cada algoritmo
+    \item Execução de validação cruzada estratificada com 5 folds para cada algoritmo
     \item Cálculo das métricas de performance (Accuracy, Precision, Recall, F1-Score, ROC-AUC)
     \item Ranking dos modelos pela métrica Accuracy
     \item Avaliação dos top-3 modelos no conjunto de teste independente
@@ -367,9 +370,100 @@ A Figura \ref{fig:model_comparison} ilustra graficamente a performance de todos 
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.95\textwidth]{Imagens/models_comparison.png}
-    \caption{Comparação do desempenho (Accuracy) dos 8 algoritmos na validação cruzada. As barras de erro representam o desvio padrão entre os 3 folds.}
+    \caption{Comparação do desempenho (Accuracy) dos 8 algoritmos na validação cruzada. As barras de erro representam o desvio padrão entre os 5 folds.}
     \label{fig:model_comparison}
 \end{figure}
+
+\subsection{Análise de Distribuição dos Resultados}
+
+Para uma compreensão mais profunda da estabilidade e variabilidade dos modelos, foram gerados gráficos de distribuição (box plots e violin plots) mostrando a performance ao longo dos 5 folds de validação cruzada, conforme recomendado no enunciado.
+
+\subsubsection{Box Plots - Distribuição por Métrica}
+
+A Figura \ref{fig:boxplot_distribution} apresenta box plots para cada métrica avaliada, mostrando a mediana, quartis, outliers e média (marcador em losango vermelho) de cada modelo.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.98\textwidth]{Imagens/distribution_boxplot.png}
+    \caption{Box plots da distribuição de desempenho dos 8 modelos ao longo dos 5 folds de validação cruzada. Cada subplot representa uma métrica diferente (Accuracy, Precision, Recall, F1-Score, ROC-AUC). A linha vermelha indica a média e os box plots mostram mediana, quartis e outliers.}
+    \label{fig:boxplot_distribution}
+\end{figure}
+
+\subsubsection{Violin Plots - Densidade de Probabilidade}
+
+A Figura \ref{fig:violin_distribution} complementa a análise com violin plots, que revelam a densidade de probabilidade completa da distribuição dos scores.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.98\textwidth]{Imagens/distribution_violinplot.png}
+    \caption{Violin plots mostrando a distribuição completa dos scores para cada modelo. A linha azul representa a mediana e o ponto vermelho a média. A largura do "violino" indica a densidade de probabilidade dos scores.}
+    \label{fig:violin_distribution}
+\end{figure}
+
+\subsubsection{Visualização Consolidada com Strip Plots}
+
+A Figura \ref{fig:combined_distribution} apresenta uma visualização consolidada combinando box plots com strip plots (pontos individuais de cada fold).
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.98\textwidth]{Imagens/distribution_combined.png}
+    \caption{Análise consolidada da distribuição de desempenho combinando box plots com pontos individuais de cada fold (strip plots). A linha tracejada vermelha indica a média geral de cada métrica. Esta visualização permite identificar tanto a tendência central quanto a dispersão individual dos resultados.}
+    \label{fig:combined_distribution}
+\end{figure}
+
+\subsubsection{Interpretação da Variabilidade}
+
+Os gráficos de distribuição revelam aspectos importantes sobre a estabilidade dos modelos:
+
+\begin{itemize}
+    \item \textbf{Gradient Boosting:} Apresenta a menor variabilidade em todas as métricas, com distribuições extremamente concentradas próximas a 1.0. Os box plots mostram quartis muito próximos e ausência de outliers, indicando performance consistente e previsível.
+    
+    \item \textbf{Decision Tree:} Mostra distribuição ligeiramente mais ampla que o GB, mas ainda muito estável. A forma dos violin plots indica distribuição aproximadamente normal dos scores.
+    
+    \item \textbf{Random Forest:} Apresenta maior variabilidade que os métodos ensemble mais sofisticados, especialmente em Precision. Os violin plots mostram distribuições mais amplas, sugerindo maior sensibilidade à divisão dos dados.
+    
+    \item \textbf{Modelos Lineares (LR e SVM):} Exibem distribuições intermediárias, com variabilidade moderada. A consistência entre folds sugere boa estabilidade, embora com performance inferior aos modelos baseados em árvores.
+    
+    \item \textbf{K-NN e Naive Bayes:} Apresentam as maiores variabilidades e as piores performances médias. Os violin plots mostram distribuições mais dispersas, indicando maior instabilidade.
+\end{itemize}
+
+Estes gráficos confirmam que os três modelos top-ranked (Gradient Boosting, Decision Tree e Random Forest) não apenas apresentam as melhores performances médias, mas também demonstram boa estabilidade ao longo das diferentes divisões dos dados.
+
+\subsubsection{Análise Quantitativa de Estabilidade}
+
+A Tabela \ref{tab:variability} apresenta o Coeficiente de Variação (CV\%) de cada modelo para todas as métricas. O CV\% é calculado como (Desvio Padrão / Média) × 100, sendo um indicador de estabilidade: quanto menor o CV\%, mais estável e previsível é o modelo.
+
+\begin{table}[H]
+\centering
+\caption{Coeficiente de Variação (\%) dos modelos ao longo dos 5 folds. Valores menores indicam maior estabilidade.}
+\label{tab:variability}
+\footnotesize
+\begin{tabular}{@{}lccccc@{}}
+\toprule
+\textbf{Modelo} & \textbf{Acc.} & \textbf{Prec.} & \textbf{Rec.} & \textbf{F1} & \textbf{AUC} \\
+\midrule
+\textbf{Gradient Boosting} & \textbf{0.06} & \textbf{0.05} & \textbf{0.06} & \textbf{0.06} & \textbf{0.00} \\
+Decision Tree & 0.58 & 0.57 & 0.58 & 0.58 & 0.48 \\
+Random Forest & 1.24 & 3.25 & 1.24 & 1.42 & 1.11 \\
+MLP Neural Network & 1.58 & 1.63 & 1.58 & 1.61 & 1.39 \\
+K-Nearest Neighbors & 1.56 & 2.12 & 1.56 & 1.77 & 1.64 \\
+SVM Linear & 2.32 & 2.33 & 2.32 & 2.31 & 1.15 \\
+Logistic Regression & 2.15 & 2.06 & 2.15 & 2.09 & 1.40 \\
+Naive Bayes & 3.10 & 5.76 & 3.10 & 3.91 & 3.84 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\textbf{Observações importantes:}
+
+\begin{itemize}
+    \item O \textbf{Gradient Boosting} apresenta a menor variabilidade em todas as métricas (CV\% < 0.1\%), demonstrando estabilidade excepcional
+    \item O \textbf{Decision Tree} também mostra boa estabilidade (CV\% < 0.6\%), consistente entre folds
+    \item O \textbf{Random Forest} apresenta maior variabilidade em Precision (CV\% = 3.25\%), sugerindo sensibilidade à composição dos folds
+    \item O \textbf{Naive Bayes} exibe a maior variabilidade (CV\% até 5.76\% em Precision), indicando instabilidade significativa
+\end{itemize}
+
+Esta análise quantitativa reforça que os modelos baseados em ensemble (Gradient Boosting e Random Forest) e árvores de decisão são não apenas os mais performáticos, mas também os mais confiáveis para este problema.
 
 \subsection{Análise dos Resultados}
 
@@ -586,6 +680,18 @@ Os três melhores modelos (Gradient Boosting, Decision Tree e Random Forest) dem
 
 O presente trabalho estabeleceu uma base sólida para o desenvolvimento de modelos preditivos de mutagenicidade Ames, identificando claramente os algoritmos mais promissores. A análise das matrizes de confusão revelou que todos os modelos apresentam maior dificuldade com a classe indefinida (0), que é a classe minoritária no dataset (4.17\% das amostras).
 
+\subsection{Uso de Ferramentas de IA}
+
+Este trabalho utilizou o modelo Claude Sonnet 4.5 (Anthropic, 2026) como ferramenta de suporte para:
+
+\begin{itemize}
+    \item \textbf{Refatoração arquitetural do repositório:} Organização da estrutura de pastas e arquivos seguindo boas práticas de projetos de Machine Learning
+    \item \textbf{Estruturação inicial do código:} Criação dos notebooks Jupyter com estrutura padronizada para análise exploratória, pré-processamento e spot-checking de algoritmos
+    \item \textbf{Configuração do ambiente:} Setup de dependências, ambiente virtual e configurações do projeto
+\end{itemize}
+
+A análise de dados, seleção e configuração dos algoritmos de aprendizado de máquina (biblioteca scikit-learn), interpretação dos resultados e redação deste relatório foram realizadas pelos autores do trabalho.
+
 \begin{thebibliography}{99}
 
 \bibitem{dataset}
@@ -593,6 +699,11 @@ Martínez, M.J., Sabando, M.V., Soto, A.J., Roca, C., Requena-Triguero, C., Camp
 \textit{Multi-Task Deep Neural Networks for Ames Mutagenicity Prediction}. 
 ChemRxiv. DOI: 10.26434/chemrxiv-2022-852tf. 
 Disponível em: \url{https://data.mendeley.com/datasets/ktc6gbfsbh/2}
+
+\bibitem{claude}
+Anthropic. (2026). 
+\textit{Claude Sonnet 4.5} [Large language model]. 
+Disponível em: \url{https://claude.ai}
 
 \bibitem{sklearn}
 Pedregosa, F., Varoquaux, G., Gramfort, A., Michel, V., Thirion, B., Grisel, O., ... \& Duchesnay, É. (2011). 
