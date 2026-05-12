@@ -75,6 +75,16 @@ desktop.ini
 data/raw/*.csv
 data/processed/*.csv
 
+# Internal documentation files (não incluir na entrega)
+CHECKLIST_T1.md
+ESTRATEGIAS_T2.md
+INSTRUCOES_ENTREGA.md
+LIMPEZA_REPOSITORIO.md
+CORRECOES_PDF.md
+*INSTRUCOES*.md
+*PLANO*.md
+*RESUMO*.md
+
 # Model files (if too large)
 results/models/*.pkl
 results/models/*.h5

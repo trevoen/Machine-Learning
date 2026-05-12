@@ -1,4 +1,4 @@
-# Trabalho Prático 1 - INF01017 - Aprendizado de Máquina
+# Predição de Mutagenicidade Ames - Aprendizado de Máquina
 
 ## Predição de Mutagenicidade Ames
 
@@ -48,12 +48,10 @@ Machine-Learning/
 ├── .gitignore                      # Arquivos ignorados pelo git
 ├── .vscode/settings.json           # Configurações do VS Code/Cursor
 ├── requirements.txt                # Dependências do projeto
-├── README.md                       # Este arquivo
-├── CHECKLIST_T1.md                 # Verificação de requisitos do T1
-└── ESTRATEGIAS_T2.md               # Estratégias recomendadas para o T2
+└── README.md                       # Este arquivo
 ```
 
-### Objetivo do Trabalho (T1)
+### Objetivo do Trabalho
 
 Realizar spot-checking de algoritmos de aprendizado supervisionado para classificação de mutagenicidade, incluindo:
 
@@ -233,8 +231,8 @@ Para este problema de classificação multiclasse, foram utilizadas:
 ### Autores
 
 - Everton Fritsch de Lima - 00334081
-- [Nome do Integrante 2] - [Cartão]
-- [Nome do Integrante 3] - [Cartão]
+- João Carlos Eggers Fleck - [Cartão]
+- Norberto Schossler De Nardin Teixeira - [00324730]
 
 ### Disciplina
 
@@ -245,23 +243,16 @@ Para este problema de classificação multiclasse, foram utilizadas:
 
 ### Status do Projeto
 
-✅ **T1 Concluído** - Spot-checking de algoritmos finalizado
+✅ **Trabalho Concluído** - Spot-checking de algoritmos finalizado
 
-**Próximos passos (T2):**
-- Otimização de hiperparâmetros dos 3 melhores modelos
+**Próximos passos:**
+- Otimização de hiperparâmetros dos modelos mais promissores
 - Análise de importância de features
 - Implementação de técnicas avançadas de ensemble
-- Consultar `ESTRATEGIAS_T2.md` para planejamento detalhado
 
 ### Licença
 
 Este projeto é desenvolvido para fins acadêmicos.
-
-### Arquivos Importantes
-
-- **`CHECKLIST_T1.md`** - Verificação completa dos 37 requisitos do T1 (100% atendidos)
-- **`ESTRATEGIAS_T2.md`** - Estratégias e recomendações para o Trabalho Prático 2
-- **`results/`** - Todas as figuras e métricas geradas automaticamente pelos notebooks
 
 ### Referências
 
