@@ -44,7 +44,9 @@ def check_dependencies():
         'matplotlib',
         'seaborn',
         'sklearn',
-        'jupyter'
+        'jupyter',
+        'optuna',
+        'joblib'
     ]
     
     missing_packages = []
@@ -83,11 +85,16 @@ def check_directory_structure():
         'data/raw',
         'data/processed',
         'notebooks',
+        'src',
         'results',
         'results/figures',
         'results/figures/eda',
         'results/figures/models',
-        'results/metrics'
+        'results/figures/t2',
+        'results/metrics',
+        'results/metrics/t2',
+        'results/models/t2',
+        'docs/Imagens'
     ]
     
     missing_dirs = []
@@ -121,7 +128,11 @@ def check_required_files():
         '.gitignore',
         'notebooks/01_exploratory_analysis.ipynb',
         'notebooks/02_data_preprocessing.ipynb',
-        'notebooks/03_model_spotchecking.ipynb'
+        'notebooks/03_model_spotchecking.ipynb',
+        'notebooks/04_hyperparameter_optimization_interpretability.ipynb',
+        'src/t2_hyperparameter_optimization.py',
+        'src/README.md',
+        'docs/main.tex'
     ]
     
     missing_files = []
@@ -190,10 +201,12 @@ def print_summary(checks):
         print("   machine-learning-py3.13.5\\Scripts\\activate")
         print("2. Inicie o Jupyter Notebook:")
         print("   jupyter notebook")
-        print("3. Execute os notebooks na ordem:")
+        print("3. Execute os notebooks/scripts na ordem:")
         print("   - 01_exploratory_analysis.ipynb")
         print("   - 02_data_preprocessing.ipynb")
         print("   - 03_model_spotchecking.ipynb")
+        print("   - 04_hyperparameter_optimization_interpretability.ipynb")
+        print("   ou: python src/t2_hyperparameter_optimization.py --trials 100 --cv-folds 5")
     else:
         print("\n⚠ ATENÇÃO: Algumas verificações falharam.")
         print("\nResolva os problemas indicados acima antes de prosseguir.")

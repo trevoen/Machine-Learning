@@ -19,34 +19,30 @@ Machine-Learning/
 │
 ├── data/                           # Dados do projeto
 │   ├── raw/                        # Dados originais (não modificados)
-│   │   ├── ames_mutagenicity_data.csv
-│   │   └── README (1).txt         # Descrição do dataset original
-│   └── processed/                  # Dados processados (gerados pelos notebooks)
+│   │   └── ames_mutagenicity_data.csv
+│   └── processed/                  # Dados processados (gerados pelos notebooks T1)
 │
-├── notebooks/                      # Jupyter Notebooks (implementação principal)
-│   ├── 01_exploratory_analysis.ipynb       # Análise Exploratória de Dados
-│   ├── 02_data_preprocessing.ipynb         # Pré-processamento
-│   └── 03_model_spotchecking.ipynb         # Spot-checking de algoritmos
+├── notebooks/                      # Jupyter Notebooks
+│   ├── 01_exploratory_analysis.ipynb
+│   ├── 02_data_preprocessing.ipynb
+│   ├── 03_model_spotchecking.ipynb
+│   └── 04_hyperparameter_optimization_interpretability.ipynb
 │
-├── results/                        # Resultados dos experimentos (gerados automaticamente)
-│   ├── figures/                    # Gráficos e visualizações
-│   │   ├── eda/                   # Figuras da EDA (figure_1.png, figure_2.png, figure_3.png)
-│   │   └── models/                # Figuras de desempenho dos modelos
-│   │       ├── models_comparison.png
-│   │       ├── confusion_matrix_*.png
-│   │       └── ranking_*.png
-│   └── metrics/                    # Métricas de desempenho (CSV)
-│       ├── eda_summary.txt
-│       ├── preprocessing_summary.txt
-│       ├── spot_checking_results.csv
-│       └── test_results.csv
+├── src/                            # Script Python do T2
+│   ├── t2_hyperparameter_optimization.py
+│   └── README.md
 │
-├── machine-learning-py3.13.5/      # Ambiente virtual (não versionado)
+├── results/                        # Resultados (gerados automaticamente)
+│   ├── figures/
+│   │   ├── eda/
+│   │   ├── models/                 # Figuras do spot-checking (T1)
+│   │   └── t2/                     # Figuras da otimização (T2)
+│   ├── metrics/
+│   │   └── t2/                     # Métricas finais do T2
+│   └── models/t2/                  # Pipelines otimizados (.joblib)
 │
-├── .gitignore                      # Arquivos ignorados pelo git
-├── .vscode/settings.json           # Configurações do VS Code/Cursor
-├── requirements.txt                # Dependências do projeto
-└── README.md                       # Este arquivo
+├── requirements.txt
+└── README.md
 ```
 
 ### Objetivo do Trabalho
@@ -108,8 +104,7 @@ data/
     └── ames_mutagenicity_data.csv  ← O arquivo deve estar aqui!
 ```
 
-**Nota:** O dataset não está versionado no Git devido ao seu tamanho
-**Nota:** O dataset não está incluído no ZIP de entrega devido ao limite de tamanho do Moodle (16 MB). Baixe-o do link acima e coloque na pasta `data/raw/` antes de executar os notebooks.
+**Nota:** O dataset não está versionado no Git nem incluído no ZIP de entrega (limite de 16 MB do Moodle). Baixe-o do link acima e coloque em `data/raw/` antes de executar os notebooks.
 
 #### Configuração do Ambiente Virtual (Recomendado)
 
@@ -159,9 +154,10 @@ jupyter notebook
    - No menu do Jupyter: Kernel → Change Kernel → machine-learning-py3.13.5
 
 4. Execute os notebooks na ordem:
-   - `01_exploratory_analysis.ipynb` - Gera 3 figuras em `results/figures/eda/`
-   - `02_data_preprocessing.ipynb` - Gera dados processados e resumo
-   - `03_model_spotchecking.ipynb` - Treina 8 modelos, gera métricas e figuras
+   - `01_exploratory_analysis.ipynb` - EDA
+   - `02_data_preprocessing.ipynb` - Pré-processamento
+   - `03_model_spotchecking.ipynb` - Spot-checking (T1)
+   - `04_hyperparameter_optimization_interpretability.ipynb` - Otimização e interpretação (T2)
 
 **Nota:** Todos os notebooks salvam automaticamente os resultados (figuras, métricas, matrizes de confusão) em `results/`.
 
@@ -270,13 +266,8 @@ Para este problema de classificação multiclasse, foram utilizadas:
 
 ### Status do Projeto
 
-✅ **T1 Concluído** - Spot-checking de algoritmos finalizado  
-✅ **T2 Implementado** - Pipeline de otimização e interpretabilidade disponível
-
-**Próximos passos:**
-- Baixar o dataset bruto para `data/raw/ames_mutagenicity_data.csv`
-- Executar o pipeline do T2
-- Inserir no relatório os valores finais gerados em `results/metrics/t2/`
+✅ **T1 Concluído** — Spot-checking de algoritmos finalizado  
+✅ **T2 Concluído** — Otimização de hiperparâmetros (Optuna), avaliação final em teste e interpretabilidade do melhor modelo
 
 ### Licença
 

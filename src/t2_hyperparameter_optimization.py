@@ -255,6 +255,7 @@ def evaluate_on_test(
     ax.set_title(f"Matriz de confusao - {model_name}")
     fig.tight_layout()
     fig.savefig(FIGURES_DIR / f"confusion_matrix_{slugify(model_name)}.png", dpi=300)
+    fig.savefig(DOCS_IMAGES_DIR / f"t2_confusion_matrix_{slugify(model_name)}.png", dpi=300)
     plt.close(fig)
 
     fig, ax = plt.subplots(figsize=(5.5, 4.5))
@@ -262,6 +263,7 @@ def evaluate_on_test(
     ax.set_title(f"Curva ROC - {model_name}")
     fig.tight_layout()
     fig.savefig(FIGURES_DIR / f"roc_curve_{slugify(model_name)}.png", dpi=300)
+    fig.savefig(DOCS_IMAGES_DIR / f"t2_roc_curve_{slugify(model_name)}.png", dpi=300)
     plt.close(fig)
 
     errors = X_test.copy()
