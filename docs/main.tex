@@ -4,7 +4,6 @@
 \usepackage{amsmath}
 \usepackage{amsfonts}
 \usepackage{amssymb}
-\usepackage{mathrsfs}
 \usepackage{graphicx}
 \usepackage{float}
 \usepackage[left=3cm,right=2cm,top=3cm,bottom=2cm]{geometry}
@@ -15,12 +14,10 @@
 % \usepackage{tikz}
 
 \usepackage{booktabs}
-\usepackage{siunitx}
 \usepackage{caption}
 \usepackage{subcaption}
 \usepackage{indentfirst}
 \usepackage{hyperref}
-\usepackage{xurl}
 
 \hypersetup{
     colorlinks=true,
@@ -637,7 +634,7 @@ Dessa forma, a otimização de hiperparâmetros foi conduzida somente sobre o co
 
 \subsection{Estratégia de Busca}
 
-Foi utilizada a biblioteca Optuna para automatizar a busca de hiperparâmetros. Para cada um dos três modelos, foram executados 6 \textit{trials} em um perfil pragmático de busca, avaliados por validação cruzada estratificada com 5 folds. A métrica principal de otimização foi o F1-score ponderado (\texttt{f1\_weighted}), escolhida por manter consistência com o critério de comparação do T1 e por lidar melhor com o desbalanceamento moderado entre classes.
+Foi utilizada a biblioteca Optuna para automatizar a busca de hiperparâmetros. Para cada um dos três modelos, foram executados 100 \textit{trials} em um perfil pragmático de busca, avaliados por validação cruzada estratificada com 5 folds. A métrica principal de otimização foi o F1-score ponderado (\texttt{f1\_weighted}), escolhida por manter consistência com o critério de comparação do T1 e por lidar melhor com o desbalanceamento moderado entre classes.
 
 Os espaços de busca foram definidos de acordo com os hiperparâmetros mais relevantes de cada família de modelos:
 
@@ -672,14 +669,14 @@ Também são gerados arquivos de apoio com as matrizes de confusão, curvas ROC 
 \toprule
 \textbf{Modelo} & \textbf{Accuracy} & \textbf{Precision} & \textbf{Recall} & \textbf{F1} & \textbf{ROC-AUC} \\
 \midrule
-\textbf{Random Forest} & \textbf{.8190} & \textbf{.8226} & \textbf{.8190} & \textbf{.8199} & \textbf{.8996} \\
-Gradient Boosting & .8021 & .8011 & .8021 & .8011 & .8770 \\
-Decision Tree & .7154 & .7142 & .7154 & .7146 & .7847 \\
+\textbf{Random Forest} & \textbf{.8285} & \textbf{.8297} & \textbf{.8285} & \textbf{.8289} & \textbf{.9062} \\
+Gradient Boosting & .8040 & .8031 & .8040 & .8033 & .8834 \\
+Decision Tree & .7427 & .7444 & .7427 & .7433 & .8144 \\
 \bottomrule
 \end{tabular}
 \end{table}
 
-O melhor desempenho global foi obtido pelo \textbf{Random Forest}, com F1 ponderado de 0.8199 e ROC-AUC de 0.8996 no conjunto de teste. O modelo também apresentou melhor equilíbrio entre as duas classes: F1 de 0.7904 para compostos não-mutagênicos e F1 de 0.8408 para compostos mutagênicos. O Gradient Boosting ficou próximo, com F1 ponderado de 0.8011, enquanto a árvore de decisão isolada apresentou queda maior, com F1 ponderado de 0.7146.
+O melhor desempenho global foi obtido pelo \textbf{Random Forest}, com F1 ponderado de 0.8289 e ROC-AUC de 0.9062 no conjunto de teste. O modelo também apresentou melhor equilíbrio entre as duas classes: F1 de 0.7969 para compostos não-mutagênicos e F1 de 0.8515 para compostos mutagênicos. O Gradient Boosting ficou próximo, com F1 ponderado de 0.8033, enquanto a árvore de decisão isolada apresentou queda maior, com F1 ponderado de 0.7433.
 
 \begin{figure}[H]
     \centering
@@ -717,7 +714,7 @@ A Figura \ref{fig:t2_permutation_importance} mostra as vinte features mais relev
     \label{fig:t2_permutation_importance}
 \end{figure}
 
-As maiores quedas médias de F1 foram observadas em descritores como \texttt{BCUTi-1h}, \texttt{AXp-5dv}, \texttt{SlogP\_VSA8}, \texttt{TpiPC10} e \texttt{MATS1are}. Essas features devem ser interpretadas como associações preditivas, não como evidências causais. Como os atributos são descritores moleculares calculados automaticamente, a discussão deve focar em como certos grupos de descritores parecem contribuir para distinguir compostos mutagênicos e não-mutagênicos, evitando conclusões químicas que não tenham sido avaliadas experimentalmente neste trabalho.
+As maiores quedas médias de F1 foram observadas em descritores como \texttt{GATS1Z}, \texttt{GATS1m}, \texttt{AATSC1se}, \texttt{GATS1d} e \texttt{SlogP\_VSA8}. Essas features devem ser interpretadas como associações preditivas, não como evidências causais. Como os atributos são descritores moleculares calculados automaticamente, a discussão deve focar em como certos grupos de descritores parecem contribuir para distinguir compostos mutagênicos e não-mutagênicos, evitando conclusões químicas que não tenham sido avaliadas experimentalmente neste trabalho.
 
 \section{Conclusão}
 
@@ -777,8 +774,8 @@ O spot-checking revelou que modelos baseados em árvores são candidatos adequad
 Os três modelos otimizados permitem comparar diferentes compromissos entre desempenho, robustez e interpretabilidade:
 
 \begin{itemize}
-    \item O \textbf{Random Forest} obteve o melhor resultado final, com F1 ponderado de 0.8199 e ROC-AUC de 0.8996.
-    \item O \textbf{Gradient Boosting} teve desempenho próximo, mas inferior, com F1 ponderado de 0.8011.
+    \item O \textbf{Random Forest} obteve o melhor resultado final, com F1 ponderado de 0.8289 e ROC-AUC de 0.9062.
+    \item O \textbf{Gradient Boosting} teve desempenho próximo, mas inferior, com F1 ponderado de 0.8033.
     \item O \textbf{Decision Tree} ficou abaixo dos ensembles, indicando que uma única árvore foi menos robusta para este conjunto de descritores.
 \end{itemize}
 

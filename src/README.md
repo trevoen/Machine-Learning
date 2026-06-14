@@ -5,7 +5,7 @@
 Execute o pipeline final a partir da raiz do projeto:
 
 ```bash
-python src/t2_hyperparameter_optimization.py --trials 6 --cv-folds 5 --importance-repeats 5 --importance-top-features 30 --search-profile pragmatic
+python src/t2_hyperparameter_optimization.py --trials 100 --cv-folds 5 --importance-repeats 10
 ```
 
 O script espera o dataset bruto em `data/raw/ames_mutagenicity_data.csv`.

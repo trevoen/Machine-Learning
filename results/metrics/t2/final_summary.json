@@ -2,121 +2,121 @@
   "best_model": "Random Forest",
   "best_model_test_metrics": {
     "model": "Random Forest",
-    "accuracy": 0.819038642789821,
-    "precision_weighted": 0.8226407622426917,
-    "recall_weighted": 0.819038642789821,
-    "f1_weighted": 0.8198937362133846,
-    "f1_macro": 0.815594516500467,
-    "roc_auc": 0.8996193822280779,
-    "precision_class_0": 0.7605042016806722,
-    "recall_class_0": 0.8227272727272728,
-    "f1_class_0": 0.7903930131004366,
+    "accuracy": 0.8284637134778511,
+    "precision_weighted": 0.8296688434384659,
+    "recall_weighted": 0.8284637134778511,
+    "f1_weighted": 0.8288759642247072,
+    "f1_macro": 0.8242123776508972,
+    "roc_auc": 0.9061886985800028,
+    "precision_class_0": 0.7828947368421053,
+    "recall_class_0": 0.8113636363636364,
+    "f1_class_0": 0.796875,
     "support_class_0": 440,
-    "precision_class_1": 0.8666666666666667,
-    "recall_class_1": 0.8164251207729468,
-    "f1_class_1": 0.8407960199004975,
+    "precision_class_1": 0.8628099173553719,
+    "recall_class_1": 0.8405797101449275,
+    "f1_class_1": 0.8515497553017944,
     "support_class_1": 621
   },
   "top_20_permutation_features": [
     {
-      "feature": "BCUTi-1h",
-      "importance_mean": 0.003186571426252449,
-      "importance_std": 0.0012523246121667565
-    },
-    {
-      "feature": "AXp-5dv",
-      "importance_mean": 0.0029875420596122025,
-      "importance_std": 0.0013660311620361494
-    },
-    {
-      "feature": "SlogP_VSA8",
-      "importance_mean": 0.002678179650027812,
-      "importance_std": 0.0016119497737584862
-    },
-    {
-      "feature": "TpiPC10",
-      "importance_mean": 0.002457152117045003,
-      "importance_std": 0.0007597625212657416
-    },
-    {
-      "feature": "MATS1are",
-      "importance_mean": 0.0020894583456108284,
-      "importance_std": 0.001093521558274618
-    },
-    {
-      "feature": "AATSC1se",
-      "importance_mean": 0.00206033735503659,
-      "importance_std": 0.0010855729138447884
-    },
-    {
-      "feature": "BCUTp-1l",
-      "importance_mean": 0.0019356832478311548,
-      "importance_std": 0.0019864930101009468
-    },
-    {
-      "feature": "BCUTare-1h",
-      "importance_mean": 0.0019200925372693245,
-      "importance_std": 0.001041708566607277
-    },
-    {
-      "feature": "piPC7",
-      "importance_mean": 0.0017287993574042425,
-      "importance_std": 0.002012876330006383
-    },
-    {
-      "feature": "AATSC1pe",
-      "importance_mean": 0.001721835958225304,
-      "importance_std": 0.00040160943024387534
-    },
-    {
-      "feature": "piPC9",
-      "importance_mean": 0.0015906406174142963,
-      "importance_std": 0.0017565896521115948
-    },
-    {
       "feature": "GATS1Z",
-      "importance_mean": 0.0015082391154307873,
-      "importance_std": 0.0012589415893145643
-    },
-    {
-      "feature": "AXp-3dv",
-      "importance_mean": 0.0014868734238120851,
-      "importance_std": 0.00046261871091170026
-    },
-    {
-      "feature": "MATS1se",
-      "importance_mean": 0.0007576967795171585,
-      "importance_std": 0.0006945063728209796
-    },
-    {
-      "feature": "MATS1pe",
-      "importance_mean": 0.000595336939446689,
-      "importance_std": 0.0009625894288123547
-    },
-    {
-      "feature": "piPC10",
-      "importance_mean": 0.0004566595037307275,
-      "importance_std": 0.0007665522539142389
-    },
-    {
-      "feature": "BCUTv-1l",
-      "importance_mean": 0.000219973134343876,
-      "importance_std": 0.0009237207673148572
-    },
-    {
-      "feature": "NaaaC",
-      "importance_mean": 0.00019830842118973013,
-      "importance_std": 0.000703998485656879
-    },
-    {
-      "feature": "piPC6",
-      "importance_mean": 2.8851734627166613e-05,
-      "importance_std": 0.0006051434358606219
+      "importance_mean": 0.002729603944830683,
+      "importance_std": 0.0011642872318177197
     },
     {
       "feature": "GATS1m",
-      "importance_mean": 2.167425769914466e-05,
-      "importance_std": 0.0018874984034861716
+      "importance_mean": 0.002238606651581554,
+      "importance_std": 0.001549835801563901
+    },
+    {
+      "feature": "AATSC1se",
+      "importance_mean": 0.0019091276487437025,
+      "importance_std": 0.0016797521406963867
+    },
+    {
+      "feature": "GATS1d",
+      "importance_mean": 0.0019043783500029999,
+      "importance_std": 0.0010473453408643676
+    },
+    {
+      "feature": "SlogP_VSA8",
+      "importance_mean": 0.0018175957113274132,
+      "importance_std": 0.001759893820025716
+    },
+    {
+      "feature": "AATS3d",
+      "importance_mean": 0.001366725854421702,
+      "importance_std": 0.0009445189265420402
+    },
+    {
+      "feature": "BCUTZ-1l",
+      "importance_mean": 0.0012388097621875093,
+      "importance_std": 0.000430819528034137
+    },
+    {
+      "feature": "BCUTv-1l",
+      "importance_mean": 0.0012097574064150352,
+      "importance_std": 0.001734095518397169
+    },
+    {
+      "feature": "BCUTi-1h",
+      "importance_mean": 0.0011106319461124503,
+      "importance_std": 0.0027893263455607037
+    },
+    {
+      "feature": "AATSC1are",
+      "importance_mean": 0.0009203590227558678,
+      "importance_std": 0.0022540186351701417
+    },
+    {
+      "feature": "AXp-1dv",
+      "importance_mean": 0.0007341095344840287,
+      "importance_std": 0.0009318512696660309
+    },
+    {
+      "feature": "MATS1se",
+      "importance_mean": 0.0005104502636492537,
+      "importance_std": 0.0012239593074852345
+    },
+    {
+      "feature": "piPC7",
+      "importance_mean": 0.0004679262410100304,
+      "importance_std": 0.000971415414948353
+    },
+    {
+      "feature": "MATS1pe",
+      "importance_mean": 0.0002939340472824403,
+      "importance_std": 0.0010335496174157877
+    },
+    {
+      "feature": "MATS1are",
+      "importance_mean": 1.4083528101704879e-05,
+      "importance_std": 0.0013134583062663525
+    },
+    {
+      "feature": "BCUTare-1h",
+      "importance_mean": -7.739130048648458e-05,
+      "importance_std": 0.0013560919606434847
+    },
+    {
+      "feature": "piPC6",
+      "importance_mean": -0.00015513338752592976,
+      "importance_std": 0.0011064732866558642
+    },
+    {
+      "feature": "ATSC1are",
+      "importance_mean": -0.00016864832704891475,
+      "importance_std": 0.0016454121508349647
+    },
+    {
+      "feature": "AXp-3dv",
+      "importance_mean": -0.00020622764477373767,
+      "importance_std": 0.0011824170358238305
+    },
+    {
+      "feature": "ATSC1se",
+      "importance_mean": -0.0003288053028255189,
+      "importance_std": 0.0016535057680238045
     }
   ],
   "target_mapping": {
