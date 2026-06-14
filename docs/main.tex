@@ -34,7 +34,7 @@
 \title{
     \vspace{2cm}
     \Huge\textbf{\MakeUppercase{Predição de Mutagenicidade Ames}}\\[0.5cm]
-    \Large Trabalho Prático 1 - INF01017\\[0.3cm]
+    \Large Trabalho Prático Final - Parte 2 - INF01017\\[0.3cm]
     \large Aprendizado de Máquina\\[0.3cm]
     \large Instituto de Informática --- UFRGS\\[0.5cm]
     \vspace{2cm}
@@ -51,7 +51,7 @@
 \date{
     \vfill
     Porto Alegre\\
-    Maio de 2026
+    Junho de 2026
 }
 
 \begin{document}
@@ -569,17 +569,19 @@ Random Forest & .8755 & .8668 & .8755 & .8594 & .9619 \\
 \end{tabular}
 \end{table}
 
-\subsubsection{Análise dos Resultados no Teste}
+\subsubsection{Análise dos Resultados Preliminares no Teste}
 
-Os resultados no conjunto de teste confirmam as observações da validação cruzada:
+Os resultados preliminares do T1 no conjunto de teste foram usados para selecionar os candidatos do T2:
 
 \begin{itemize}
-    \item \textbf{Gradient Boosting:} Manteve performance excepcional (99.91\% F1) no teste, praticamente idêntica à validação cruzada (99.77\%), indicando excelente capacidade de generalização apesar da suspeita inicial de overfitting.
+    \item \textbf{Gradient Boosting:} apresentou o maior F1-score entre os modelos avaliados no T1.
     
-    \item \textbf{Decision Tree:} Performance no teste (99.46\% F1) ligeiramente superior à validação cruzada (98.24\%), confirmando robustez do modelo.
+    \item \textbf{Decision Tree:} também apresentou desempenho elevado e foi mantida por ser um modelo naturalmente interpretável.
     
-    \item \textbf{Random Forest:} Performance no teste (85.94\% F1) ligeiramente inferior à validação cruzada (86.43\%), comportamento esperado e saudável indicando boa generalização sem overfitting significativo.
+    \item \textbf{Random Forest:} foi selecionada como alternativa ensemble mais robusta.
 \end{itemize}
+
+Como o T2 exige atenção explícita à prevenção de vazamento de dados, estes resultados são tratados como ponto de partida para escolha dos algoritmos, e não como a avaliação final do trabalho.
 
 \subsubsection{Matrizes de Confusão}
 
@@ -588,14 +590,14 @@ As Figuras \ref{fig:cm_gb}, \ref{fig:cm_dt} e \ref{fig:cm_rf} apresentam as matr
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.6\textwidth]{Imagens/confusion_matrix_GB.png}
-    \caption{Matriz de Confusão - Gradient Boosting no conjunto de teste. O modelo apresenta apenas 1 erro em 1,108 predições.}
+    \caption{Matriz de Confusão - Gradient Boosting no conjunto de teste no protocolo preliminar do T1.}
     \label{fig:cm_gb}
 \end{figure}
 
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.6\textwidth]{Imagens/confusion_matrix_DT.png}
-    \caption{Matriz de Confusão - Decision Tree no conjunto de teste. O modelo apresenta 6 erros em 1,108 predições.}
+    \caption{Matriz de Confusão - Decision Tree no conjunto de teste no protocolo preliminar do T1.}
     \label{fig:cm_dt}
 \end{figure}
 
@@ -609,15 +611,117 @@ As Figuras \ref{fig:cm_gb}, \ref{fig:cm_dt} e \ref{fig:cm_rf} apresentam as matr
 \textbf{Observações das matrizes de confusão:}
 
 \begin{itemize}
-    \item \textbf{Gradient Boosting:} Praticamente perfeito, com apenas 1 erro de classificação em 1,108 amostras
-    \item \textbf{Decision Tree:} Excelente desempenho com 6 erros, distribuídos entre as classes
-    \item \textbf{Random Forest:} Maior taxa de erros (~14\%), mas ainda apresenta desempenho sólido
-    \item Todos os modelos apresentam dificuldade similar com a classe indefinida (0), que é minoritária
+    \item \textbf{Gradient Boosting} e \textbf{Decision Tree} tiveram desempenho muito alto no protocolo preliminar.
+    \item \textbf{Random Forest} apresentou mais erros, mas manteve desempenho competitivo para seguir ao T2.
+    \item A avaliação final do T2 passa a remover a classe indefinida e a excluir labels auxiliares das features.
 \end{itemize}
+
+\section{Otimização de Hiperparâmetros}
+
+A segunda etapa do trabalho aprofundou a investigação dos três modelos mais promissores identificados no spot-checking: Gradient Boosting, Decision Tree e Random Forest. Antes da otimização, o pipeline experimental foi revisado para atender explicitamente ao requisito de prevenção de \textit{data leakage} destacado no enunciado do T2.
+
+\subsection{Correções Metodológicas}
+
+A implementação do T2 parte novamente do arquivo bruto \texttt{ames\_mutagenicity\_data.csv}, em vez de reutilizar diretamente os arquivos processados da etapa anterior. Esta decisão foi adotada para garantir que todas as transformações fossem aprendidas apenas nos dados de treinamento durante a validação cruzada.
+
+As seguintes correções foram aplicadas:
+
+\begin{itemize}
+    \item Remoção das amostras com \texttt{Overall = 0}, mantendo a formulação binária do problema: mutagênico vs. não-mutagênico.
+    \item Remoção das colunas auxiliares \texttt{TA98}, \texttt{TA100}, \texttt{TA102}, \texttt{TA1535} e \texttt{TA1537} das features. Estas colunas representam labels experimentais por cepa bacteriana e são diretamente relacionadas ao consenso \texttt{Overall}; portanto, seu uso como atributos levaria a vazamento de informação da variável alvo.
+    \item Inclusão das etapas de imputação, remoção de baixa variância e normalização dentro de objetos \texttt{Pipeline} do scikit-learn.
+    \item Separação de um conjunto de teste estratificado, correspondente a 20\% dos dados, utilizado apenas uma vez ao final da otimização.
+\end{itemize}
+
+Dessa forma, a otimização de hiperparâmetros foi conduzida somente sobre o conjunto de treino, usando validação cruzada estratificada, enquanto o conjunto de teste permaneceu isolado para a avaliação final.
+
+\subsection{Estratégia de Busca}
+
+Foi utilizada a biblioteca Optuna para automatizar a busca de hiperparâmetros. Para cada um dos três modelos, foram executados 6 \textit{trials} em um perfil pragmático de busca, avaliados por validação cruzada estratificada com 5 folds. A métrica principal de otimização foi o F1-score ponderado (\texttt{f1\_weighted}), escolhida por manter consistência com o critério de comparação do T1 e por lidar melhor com o desbalanceamento moderado entre classes.
+
+Os espaços de busca foram definidos de acordo com os hiperparâmetros mais relevantes de cada família de modelos:
+
+\begin{itemize}
+    \item \textbf{Gradient Boosting:} número de estimadores, taxa de aprendizado, profundidade máxima, amostragem e parâmetros mínimos de divisão e folha.
+    \item \textbf{Decision Tree:} critério de divisão, profundidade máxima, poda por \texttt{ccp\_alpha}, balanceamento de classes e parâmetros mínimos de divisão e folha.
+    \item \textbf{Random Forest:} número de árvores, profundidade máxima, número de atributos por divisão, amostragem com reposição, balanceamento de classes e parâmetros mínimos de divisão e folha.
+\end{itemize}
+
+O perfil pragmático limitou combinações muito custosas, principalmente em modelos ensemble sobre dados de alta dimensionalidade. Assim, a busca priorizou a geração de uma avaliação final metodologicamente correta dentro do tempo disponível, mantendo a possibilidade de ampliar o número de \textit{trials} posteriormente.
+
+O código da otimização está disponível em \texttt{src/t2\_hyperparameter\_optimization.py}. O notebook \texttt{notebooks/04\_hyperparameter\_optimization\_interpretability.ipynb} executa esse pipeline e salva automaticamente os resultados em \texttt{results/metrics/t2/}, \texttt{results/figures/t2/} e \texttt{results/models/t2/}.
+
+\section{Comparação de Desempenho em Dados de Teste}
+
+Após a otimização, cada melhor pipeline foi treinado novamente usando todo o conjunto de treino e avaliado no conjunto de teste reservado. A comparação final considera Accuracy, Precision ponderada, Recall ponderado, F1-score ponderado, F1 macro e ROC-AUC.
+
+Os resultados numéricos finais são salvos automaticamente no arquivo:
+
+\begin{center}
+\texttt{results/metrics/t2/final\_test\_results.csv}
+\end{center}
+
+Também são gerados arquivos de apoio com as matrizes de confusão, curvas ROC e sumários de erro por modelo. A Figura \ref{fig:t2_model_comparison} apresenta a comparação agregada das métricas no teste, quando o pipeline experimental é executado.
+
+\begin{table}[H]
+\centering
+\caption{Resultados finais dos modelos otimizados no conjunto de teste}
+\label{tab:t2_test_results}
+\small
+\begin{tabular}{@{}lccccc@{}}
+\toprule
+\textbf{Modelo} & \textbf{Accuracy} & \textbf{Precision} & \textbf{Recall} & \textbf{F1} & \textbf{ROC-AUC} \\
+\midrule
+\textbf{Random Forest} & \textbf{.8190} & \textbf{.8226} & \textbf{.8190} & \textbf{.8199} & \textbf{.8996} \\
+Gradient Boosting & .8021 & .8011 & .8021 & .8011 & .8770 \\
+Decision Tree & .7154 & .7142 & .7154 & .7146 & .7847 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+O melhor desempenho global foi obtido pelo \textbf{Random Forest}, com F1 ponderado de 0.8199 e ROC-AUC de 0.8996 no conjunto de teste. O modelo também apresentou melhor equilíbrio entre as duas classes: F1 de 0.7904 para compostos não-mutagênicos e F1 de 0.8408 para compostos mutagênicos. O Gradient Boosting ficou próximo, com F1 ponderado de 0.8011, enquanto a árvore de decisão isolada apresentou queda maior, com F1 ponderado de 0.7146.
+
+\begin{figure}[H]
+    \centering
+    \IfFileExists{Imagens/t2_optimized_models_test_comparison.png}{
+        \includegraphics[width=0.95\textwidth]{Imagens/t2_optimized_models_test_comparison.png}
+    }{
+        \fbox{\parbox{0.85\textwidth}{Figura gerada pelo script em \texttt{results/figures/t2/optimized\_models\_test\_comparison.png} e \texttt{docs/Imagens/t2\_optimized\_models\_test\_comparison.png} após a execução final.}}
+    }
+    \caption{Comparação dos modelos otimizados no conjunto de teste.}
+    \label{fig:t2_model_comparison}
+\end{figure}
+
+A análise dos erros deve considerar não apenas a métrica agregada, mas também o tipo de erro cometido. Em um problema de mutagenicidade, falsos negativos são particularmente relevantes, pois representam compostos potencialmente mutagênicos classificados como não-mutagênicos. Por isso, a discussão final deve contrastar o F1 ponderado com recall por classe e matriz de confusão.
+
+\section{Interpretação do Melhor Modelo Treinado}
+
+Para o modelo com melhor F1-score ponderado no conjunto de teste, o Random Forest, foi aplicada análise de importância por permutação. Este método mede a queda de desempenho quando os valores de uma feature são embaralhados, fornecendo uma estimativa direta da relevância preditiva de cada descritor molecular para o pipeline final.
+
+A interpretação é limitada ao melhor modelo final, conforme solicitado no enunciado. O script salva a tabela completa de importâncias em:
+
+\begin{center}
+\texttt{results/metrics/t2/permutation\_importance\_<modelo>.csv}
+\end{center}
+
+A Figura \ref{fig:t2_permutation_importance} mostra as vinte features mais relevantes segundo essa análise, quando os experimentos finais são executados.
+
+\begin{figure}[H]
+    \centering
+    \IfFileExists{Imagens/t2_permutation_importance.png}{
+        \includegraphics[width=0.9\textwidth]{Imagens/t2_permutation_importance.png}
+    }{
+        \fbox{\parbox{0.85\textwidth}{Figura gerada pelo script em \texttt{results/figures/t2/permutation\_importance\_<modelo>.png} e \texttt{docs/Imagens/t2\_permutation\_importance.png} após a execução final.}}
+    }
+    \caption{Importância por permutação das principais features do melhor modelo final.}
+    \label{fig:t2_permutation_importance}
+\end{figure}
+
+As maiores quedas médias de F1 foram observadas em descritores como \texttt{BCUTi-1h}, \texttt{AXp-5dv}, \texttt{SlogP\_VSA8}, \texttt{TpiPC10} e \texttt{MATS1are}. Essas features devem ser interpretadas como associações preditivas, não como evidências causais. Como os atributos são descritores moleculares calculados automaticamente, a discussão deve focar em como certos grupos de descritores parecem contribuir para distinguir compostos mutagênicos e não-mutagênicos, evitando conclusões químicas que não tenham sido avaliadas experimentalmente neste trabalho.
 
 \section{Conclusão}
 
-Este trabalho realizou com sucesso a caracterização do problema de predição de mutagenicidade Ames e o spot-checking de 8 algoritmos de aprendizado de máquina em um dataset de alta dimensionalidade contendo 5,536 compostos químicos e 1,371 descritores moleculares.
+Este trabalho realizou a caracterização do problema de predição de mutagenicidade Ames, o spot-checking inicial de 8 algoritmos de aprendizado de máquina e, na segunda etapa, a otimização e interpretação dos modelos mais promissores em um pipeline revisado para evitar vazamento de dados.
 
 \subsection{Principais Achados}
 
@@ -630,14 +734,14 @@ Este trabalho realizou com sucesso a caracterização do problema de predição 
     \item Ausência de valores faltantes e duplicatas após tratamento inicial
 \end{itemize}
 
-\paragraph{2. Performance dos Algoritmos:}
+\paragraph{2. Performance dos Algoritmos no T1:}
 
 \begin{itemize}
-    \item \textbf{Modelos baseados em árvores dominaram:} Gradient Boosting (F1: 99.77\%, ROC-AUC: 1.000), Decision Tree (F1: 98.24\%, ROC-AUC: 0.983) e Random Forest (F1: 86.43\%, ROC-AUC: 0.964) foram os três melhores
+    \item \textbf{Modelos baseados em árvores dominaram:} Gradient Boosting, Decision Tree e Random Forest foram os três modelos mais bem posicionados no spot-checking inicial.
     
-    \item \textbf{Validação no teste confirmou generalização:} Gradient Boosting (99.91\% F1 no teste) e Decision Tree (99.46\% F1 no teste) mantiveram performance excepcional, descartando a suspeita de overfitting
+    \item \textbf{Os resultados do T1 motivaram a escolha dos candidatos do T2:} os três modelos baseados em árvores foram selecionados para otimização por apresentarem os melhores resultados preliminares.
     
-    \item \textbf{Random Forest apresenta melhor balanço prático:} Com F1 de 86.43\% (CV) e 85.94\% (teste), oferece performance sólida com comportamento previsível
+    \item \textbf{O T2 revisou o protocolo experimental:} a avaliação final deve ser interpretada a partir do pipeline corrigido, sem labels auxiliares como features e sem ajuste de pré-processamento fora da validação cruzada.
     
     \item \textbf{Modelos intermediários:} MLP (F1: 80.92\%, ROC-AUC: 0.902), SVM Linear (F1: 80.72\%, ROC-AUC: 0.892) e Logistic Regression (F1: 80.04\%, ROC-AUC: 0.881) apresentaram desempenho moderado similar
     
@@ -658,27 +762,27 @@ O problema de predição de mutagenicidade Ames apresenta:
 
 \subsection{Algoritmos Mais Promissores}
 
-Com base nos resultados obtidos, destacam-se três algoritmos que apresentaram os melhores desempenhos:
+Com base no spot-checking inicial, destacam-se três algoritmos selecionados para a etapa de otimização:
 
 \begin{enumerate}
-    \item \textbf{Gradient Boosting} --- Performance excepcional (F1: 99.77\% ± 0.37\%, ROC-AUC: 1.000), confirmada no conjunto de teste (F1: 99.91\%)
-    \item \textbf{Decision Tree} --- Alta acurácia (F1: 98.24\% ± 0.72\%, ROC-AUC: 0.983), com excelente generalização no teste (F1: 99.46\%)
-    \item \textbf{Random Forest} --- Melhor balanço entre performance e robustez (F1: 86.43\% ± 0.48\%, ROC-AUC: 0.964), com comportamento consistente no teste (F1: 85.94\%)
+    \item \textbf{Gradient Boosting} --- modelo de boosting com alta capacidade de capturar relações não-lineares.
+    \item \textbf{Decision Tree} --- modelo naturalmente interpretável e útil como referência para análise de regras.
+    \item \textbf{Random Forest} --- ensemble de árvores com boa robustez e menor sensibilidade a uma única árvore ajustada.
 \end{enumerate}
 
 \subsection{Considerações Finais}
 
-O spot-checking revelou que modelos ensemble baseados em árvores são especialmente adequados para este problema de classificação de compostos químicos. A validação no conjunto de teste independente confirmou a capacidade de generalização dos modelos, com resultados consistentes entre cross-validation e teste.
+O spot-checking revelou que modelos baseados em árvores são candidatos adequados para este problema de classificação de compostos químicos. No T2, a otimização confirmou que o Random Forest foi o modelo mais competitivo quando avaliado em uma metodologia mais rigorosa, sem vazamento de dados e com o conjunto de teste preservado até a etapa final.
 
-Os três melhores modelos (Gradient Boosting, Decision Tree e Random Forest) demonstraram excelente capacidade de capturar as relações não-lineares complexas entre os descritores moleculares e a mutagenicidade dos compostos. Em particular:
+Os três modelos otimizados permitem comparar diferentes compromissos entre desempenho, robustez e interpretabilidade:
 
 \begin{itemize}
-    \item O \textbf{Gradient Boosting} alcançou performance quase perfeita (99.91\% F1 no teste), com apenas 1 erro em 1,108 predições
-    \item O \textbf{Decision Tree} também apresentou resultado excepcional (99.46\% F1 no teste), com 6 erros em 1,108 predições
-    \item O \textbf{Random Forest} mostrou-se o mais robusto (85.94\% F1 no teste), com variância consistente entre validação cruzada e teste
+    \item O \textbf{Random Forest} obteve o melhor resultado final, com F1 ponderado de 0.8199 e ROC-AUC de 0.8996.
+    \item O \textbf{Gradient Boosting} teve desempenho próximo, mas inferior, com F1 ponderado de 0.8011.
+    \item O \textbf{Decision Tree} ficou abaixo dos ensembles, indicando que uma única árvore foi menos robusta para este conjunto de descritores.
 \end{itemize}
 
-O presente trabalho estabeleceu uma base sólida para o desenvolvimento de modelos preditivos de mutagenicidade Ames, identificando claramente os algoritmos mais promissores. A análise das matrizes de confusão revelou que todos os modelos apresentam maior dificuldade com a classe indefinida (0), que é a classe minoritária no dataset (4.17\% das amostras).
+O presente trabalho estabeleceu um pipeline completo para desenvolvimento de modelos preditivos de mutagenicidade Ames, incluindo caracterização do problema, comparação preliminar de algoritmos, otimização de hiperparâmetros, avaliação final em teste e interpretação do melhor modelo. Como trabalhos futuros, poderiam ser investigadas técnicas adicionais de seleção de atributos, validação externa usando a partição original do artigo e comparação com modelos especializados para descritores moleculares.
 
 \subsection{Uso de Ferramentas de IA}
 

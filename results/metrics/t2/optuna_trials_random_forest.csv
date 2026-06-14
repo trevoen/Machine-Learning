@@ -1,0 +1,7 @@
+number,value,datetime_start,datetime_complete,duration,params_model__bootstrap,params_model__class_weight,params_model__max_depth,params_model__max_features,params_model__min_samples_leaf,params_model__min_samples_split,params_model__n_estimators,state
+0,0.8196361359942446,2026-06-13 20:28:46.787611,2026-06-13 20:29:00.732543,0 days 00:00:13.944932,False,balanced,43,sqrt,12,26,194,COMPLETE
+1,0.8108720127604766,2026-06-13 20:29:00.733029,2026-06-13 20:29:05.460124,0 days 00:00:04.727095,False,,44,log2,5,30,105,COMPLETE
+2,0.798696571284943,2026-06-13 20:29:05.460604,2026-06-13 20:29:12.291192,0 days 00:00:06.830588,False,,8,log2,8,11,253,COMPLETE
+3,0.8009898679407902,2026-06-13 20:29:12.291880,2026-06-13 20:29:22.928902,0 days 00:00:10.637022,True,,10,sqrt,19,4,252,COMPLETE
+4,0.7994716122426653,2026-06-13 20:29:22.929380,2026-06-13 20:29:27.966863,0 days 00:00:05.037483,False,,24,log2,19,3,130,COMPLETE
+5,0.8089554043285416,2026-06-13 20:29:27.967420,2026-06-13 20:29:36.621938,0 days 00:00:08.654518,False,balanced,36,log2,18,33,343,COMPLETE

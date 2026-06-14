@@ -1,0 +1,29 @@
+{
+  "n_samples": 5305,
+  "n_features": 1360,
+  "target_mapping": {
+    "-1": 0,
+    "1": 1
+  },
+  "dropped_columns": [
+    "Id",
+    "Name",
+    "CAS",
+    "SMILES RDKit",
+    "Partition",
+    "TA98",
+    "TA100",
+    "TA102",
+    "TA1535",
+    "TA1537",
+    "Overall"
+  ],
+  "class_counts_original": {
+    "-1": 2202,
+    "1": 3103
+  },
+  "class_counts_encoded": {
+    "0": 2202,
+    "1": 3103
+  }
+}

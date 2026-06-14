@@ -198,15 +198,43 @@ Foram testados 8 algoritmos diversificados, conforme a proposta de spot-checking
 6. **Redes Neurais**
    - MLP Neural Network
 
-### Resultados Obtidos (Top 3)
+### Resultados Obtidos no T1 (Top 3)
 
-Com base no spot-checking realizado:
+Com base no spot-checking preliminar realizado no T1:
 
 1. **Gradient Boosting** - F1: 99.77% (CV), 99.91% (teste)
 2. **Decision Tree** - F1: 98.24% (CV), 99.46% (teste)
 3. **Random Forest** - F1: 86.43% (CV), 85.94% (teste)
 
-Para detalhes completos sobre a metodologia, resultados e análise, consulte o relatório PDF do trabalho.
+Esses modelos são usados como candidatos para o T2. A etapa final de otimização reconstroi a base a partir do CSV bruto, remove labels auxiliares das features e encapsula o pré-processamento em `Pipeline` para evitar vazamento de dados.
+
+### Trabalho Prático 2
+
+O pipeline do T2 está implementado em:
+
+- `src/t2_hyperparameter_optimization.py`
+- `notebooks/04_hyperparameter_optimization_interpretability.ipynb`
+
+Execução recomendada a partir da raiz do projeto:
+
+```bash
+python src/t2_hyperparameter_optimization.py --trials 6 --cv-folds 5 --importance-repeats 5 --importance-top-features 30 --search-profile pragmatic
+```
+
+Para um teste rápido de funcionamento:
+
+```bash
+python src/t2_hyperparameter_optimization.py --trials 2 --cv-folds 3 --importance-repeats 2 --importance-top-features 20
+```
+
+Para uma busca mais longa, use `--search-profile robust` e aumente `--trials`.
+
+O script espera o arquivo `data/raw/ames_mutagenicity_data.csv` e gera saídas em:
+
+- `results/metrics/t2/`
+- `results/figures/t2/`
+- `results/models/t2/`
+- `docs/Imagens/` para as figuras usadas no relatório
 
 ### Métricas de Avaliação
 
@@ -242,12 +270,13 @@ Para este problema de classificação multiclasse, foram utilizadas:
 
 ### Status do Projeto
 
-✅ **Trabalho Concluído** - Spot-checking de algoritmos finalizado
+✅ **T1 Concluído** - Spot-checking de algoritmos finalizado  
+✅ **T2 Implementado** - Pipeline de otimização e interpretabilidade disponível
 
 **Próximos passos:**
-- Otimização de hiperparâmetros dos modelos mais promissores
-- Análise de importância de features
-- Implementação de técnicas avançadas de ensemble
+- Baixar o dataset bruto para `data/raw/ames_mutagenicity_data.csv`
+- Executar o pipeline do T2
+- Inserir no relatório os valores finais gerados em `results/metrics/t2/`
 
 ### Licença
 
